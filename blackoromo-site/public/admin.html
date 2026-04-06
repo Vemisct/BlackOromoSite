@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Black Oromo Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --gold: #d4af37;
+            --gold-dark: #b8902a;
+            --bg-dark: #0b0a09;
+            --card-bg: rgba(20, 18, 16, 0.7);
+            --text-light: #e8e0d5;
+            --text-muted: #c0b19e;
+            --danger: #e6a177;
+            --border-gold: rgba(212,175,55,0.2);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #1e1a17; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--gold-dark); }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tab-content { animation: fadeIn 0.3s ease-out; }
+
+        .admin-wrapper { display: flex; min-height: 100vh; }
+        .sidebar {
+            width: 280px;
+            background: #0f0d0b;
+            border-right: 1px solid var(--border-gold);
+            padding: 30px 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: 0.3s;
+            z-index: 100;
+        }
+        .sidebar .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.7rem;
+            margin-bottom: 40px;
+            text-align: center;
+            background: linear-gradient(135deg, #fff, var(--gold));
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .sidebar .logo small {
+            font-size: 0.7rem;
+            display: block;
+            color: var(--gold);
+            background: none;
+            letter-spacing: 2px;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 18px;
+            margin: 8px 0;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.2s;
+            color: var(--text-muted);
+        }
+        .nav-item i { width: 24px; font-size: 1.2rem; }
+        .nav-item.active {
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--gold);
+            border-left: 3px solid var(--gold);
+        }
+        .nav-item:hover:not(.active) {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-light);
+        }
+        .logout-btn {
+            margin-top: 40px;
+            border-top: 1px solid var(--border-gold);
+            padding-top: 20px;
+            color: var(--danger);
+        }
+        .main-content {
+            margin-left: 280px;
+            flex: 1;
+            padding: 30px 40px;
+            transition: 0.3s;
+        }
+        .page-header { margin-bottom: 30px; }
+        .page-header h1 {
+            font-size: 2rem;
+            font-family: 'Playfair Display', serif;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border-radius: 32px;
+            padding: 28px;
+            text-align: center;
+            border: 1px solid var(--border-gold);
+            transition: 0.2s;
+        }
+        .stat-card:hover { transform: translateY(-4px); border-color: var(--gold); }
+        .stat-card i { font-size: 2.2rem; color: var(--gold); margin-bottom: 12px; display: block; }
+        .stat-number { font-size: 2rem; font-weight: 700; }
+        .chart-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border-radius: 32px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-gold);
+        }
+        .menu-toolbar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .search-box {
+            background: #2a241f;
+            border-radius: 40px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--border-gold);
+        }
+        .search-box input {
+            background: none;
+            border: none;
+            color: white;
+            padding: 8px;
+            width: 200px;
+        }
+        .menu-table, .reviews-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(20,18,16,0.5);
+            border-radius: 28px;
+            overflow: hidden;
+        }
+        .menu-table th, .menu-table td,
+        .reviews-table th, .reviews-table td {
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-gold);
+        }
+        .menu-table th, .reviews-table th { color: var(--gold); font-weight: 600; }
+        .edit-btn, .delete-btn, .approve-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin: 0 6px;
+            transition: 0.2s;
+        }
+        .edit-btn { color: var(--gold); }
+        .delete-btn { color: var(--danger); }
+        .approve-btn { color: #2a8f6e; }
+        .add-form {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border-radius: 32px;
+            padding: 28px;
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            align-items: end;
+        }
+        .add-form input, .add-form textarea {
+            background: #2a241f;
+            border: 1px solid var(--border-gold);
+            padding: 12px 16px;
+            border-radius: 40px;
+            color: white;
+            width: 100%;
+        }
+        .add-form button {
+            background: var(--gold);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .add-form button:hover { background: var(--gold-dark); transform: translateY(-2px); }
+        .chat-messages-admin {
+            height: 500px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.3);
+            border-radius: 32px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .message-item {
+            margin-bottom: 16px;
+            padding: 14px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 24px;
+            position: relative;
+            padding-right: 50px;
+        }
+        .message-item strong { color: var(--gold); }
+        .message-time { font-size: 0.7rem; opacity: 0.6; margin-left: 10px; }
+        .delete-msg {
+            position: absolute;
+            right: 12px;
+            top: 12px;
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            opacity: 0;
+            transition: 0.2s;
+        }
+        .message-item:hover .delete-msg { opacity: 1; }
+        .reply-area {
+            display: flex;
+            gap: 12px;
+        }
+        .reply-area input {
+            flex: 1;
+            background: #2a241f;
+            border: 1px solid var(--border-gold);
+            padding: 14px 20px;
+            border-radius: 60px;
+            color: white;
+        }
+        .reply-area button {
+            background: var(--gold);
+            border: none;
+            padding: 0 32px;
+            border-radius: 60px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .hidden { display: none; }
+        @media (max-width: 768px) {
+            .sidebar { width: 80px; padding: 20px 10px; }
+            .sidebar .logo span:not(.short) { display: none; }
+            .nav-item span:not(.short) { display: none; }
+            .main-content { margin-left: 80px; padding: 20px; }
+            .add-form { grid-template-columns: 1fr; }
+            .menu-table th, .menu-table td,
+            .reviews-table th, .reviews-table td { padding: 8px; font-size: 0.75rem; }
+        }
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--gold);
+            color: #0b0a09;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .btn-outline-clear {
+            background: transparent;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            padding: 6px 12px;
+            border-radius: 40px;
+            cursor: pointer;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .status-approved { background: #2a8f6e; color: white; }
+        .status-pending { background: #b8902a; color: #0b0a09; }
+    </style>
+</head>
+<body>
+<div class="admin-wrapper">
+    <div class="sidebar">
+        <div class="logo">Black<span> Oromo</span><small>Admin Panel</small></div>
+        <div class="nav-item active" data-tab="dashboard"><i class="fas fa-chart-line"></i> <span>Статистика</span></div>
+        <div class="nav-item" data-tab="menu"><i class="fas fa-utensils"></i> <span>Керування меню</span></div>
+        <div class="nav-item" data-tab="reviews"><i class="fas fa-star"></i> <span>Відгуки</span></div>
+        <div class="nav-item" data-tab="chat"><i class="fas fa-comments"></i> <span>Чат з клієнтами</span></div>
+        <div class="nav-item logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span>Вийти</span></div>
+    </div>
+    <div class="main-content">
+        <!-- Статистика -->
+        <div id="dashboardTab" class="tab-content">
+            <div class="page-header"><h1><i class="fas fa-chart-simple"></i> Статистика</h1></div>
+            <div class="stats-grid">
+                <div class="stat-card"><i class="fas fa-eye"></i><div class="stat-number" id="statPageViews">0</div><div>Переглядів за 7 днів</div></div>
+                <div class="stat-card"><i class="fas fa-users"></i><div class="stat-number" id="statActiveUsers">0</div><div>Активних користувачів (24 год)</div></div>
+                <div class="stat-card"><i class="fas fa-star"></i><div class="stat-number" id="statTotalReviews">0</div><div>Всього відгуків</div></div>
+                <div class="stat-card"><i class="fas fa-check-circle"></i><div class="stat-number" id="statApprovedReviews">0</div><div>Схвалених відгуків</div></div>
+            </div>
+            <div class="chart-container"><h3 style="margin-bottom: 20px;">Перегляди сторінок за останні 7 днів</h3><canvas id="viewsChart" width="400" height="200"></canvas></div>
+        </div>
+
+        <!-- Керування меню -->
+        <div id="menuTab" class="tab-content hidden">
+            <div class="page-header"><h1><i class="fas fa-edit"></i> Меню закладу</h1></div>
+            <div class="menu-toolbar"><div class="search-box"><i class="fas fa-search"></i><input type="text" id="menuSearch" placeholder="Пошук по назві..."></div></div>
+            <div style="overflow-x: auto;"><table class="menu-table"><thead><tr><th>Категорія</th><th>Назва</th><th>Ціна</th><th>Опис</th><th>Дії</th></tr></thead><tbody id="menuTableBody"></tbody></table></div>
+            <div class="add-form" id="addMenuForm">
+                <input type="text" id="cat" placeholder="Категорія (напр. Кава)" required>
+                <input type="text" id="name" placeholder="Назва" required>
+                <input type="text" id="price" placeholder="Ціна (напр. 45₴)" required>
+                <textarea id="desc" placeholder="Опис" rows="1"></textarea>
+                <button id="submitMenuItem">➕ Додати</button>
+            </div>
+        </div>
+
+        <!-- Відгуки -->
+        <div id="reviewsTab" class="tab-content hidden">
+            <div class="page-header"><h1><i class="fas fa-star"></i> Управління відгуками</h1></div>
+            <div class="menu-toolbar">
+                <div class="search-box"><i class="fas fa-search"></i><input type="text" id="reviewsSearch" placeholder="Пошук по імені або тексту..."></div>
+            </div>
+            <div style="overflow-x: auto;">
+                <table class="reviews-table">
+                    <thead><tr><th>Користувач</th><th>Оцінка</th><th>Відгук</th><th>Дата</th><th>Статус</th><th>Дії</th></tr></thead>
+                    <tbody id="reviewsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Чат -->
+        <div id="chatTab" class="tab-content hidden">
+            <div class="page-header"><h1><i class="fas fa-message"></i> Чат з відвідувачами</h1></div>
+            <div class="chat-header" style="display: flex; justify-content: space-between; margin-bottom: 20px;"><span><i class="fas fa-comment-dots"></i> Всього повідомлень: <span id="totalMsgCount">0</span></span><button id="clearChatBtn" class="btn-outline-clear">Очистити чат</button></div>
+            <div id="adminChatMessages" class="chat-messages-admin"></div>
+            <div class="reply-area"><input type="text" id="adminReplyInput" placeholder="Відповідь від адміна..."><button id="sendAdminReplyBtn">Надіслати</button></div>
+        </div>
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    let currentEditId = null;
+    let allMenuItems = [];
+    let allReviews = [];
+    let viewsChart = null;
+
+    // DOM елементи
+    const menuTableBody = document.getElementById('menuTableBody');
+    const menuSearch = document.getElementById('menuSearch');
+    const submitBtn = document.getElementById('submitMenuItem');
+    const catInput = document.getElementById('cat');
+    const nameInput = document.getElementById('name');
+    const priceInput = document.getElementById('price');
+    const descInput = document.getElementById('desc');
+    const reviewsTableBody = document.getElementById('reviewsTableBody');
+    const reviewsSearch = document.getElementById('reviewsSearch');
+
+    // Вкладки
+    const tabs = document.querySelectorAll('.nav-item[data-tab]');
+    const contents = {
+        dashboard: document.getElementById('dashboardTab'),
+        menu: document.getElementById('menuTab'),
+        reviews: document.getElementById('reviewsTab'),
+        chat: document.getElementById('chatTab')
+    };
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabName = tab.getAttribute('data-tab');
+            Object.values(contents).forEach(c => c.classList.add('hidden'));
+            contents[tabName].classList.remove('hidden');
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            if (tabName === 'menu') renderMenuTable();
+            if (tabName === 'reviews') loadReviews();
+            if (tabName === 'chat') loadChatHistory();
+            if (tabName === 'dashboard') { loadStats(); loadChartData(); }
+        });
+    });
+
+    function showNotification(msg, isError = false) {
+        const notif = document.createElement('div');
+        notif.className = 'notification';
+        notif.innerText = msg;
+        if (isError) notif.style.background = '#e6a177';
+        document.body.appendChild(notif);
+        setTimeout(() => notif.remove(), 3000);
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : m === '>' ? '&gt;' : m);
+    }
+
+    // ---------- Меню (працює) ----------
+    async function loadMenu() {
+        try {
+            const res = await fetch('/api/menu');
+            allMenuItems = await res.json();
+            renderMenuTable();
+        } catch(e) { console.error(e); showNotification('Помилка завантаження меню', true); }
+    }
+    function renderMenuTable() {
+        const searchTerm = menuSearch ? menuSearch.value.toLowerCase() : '';
+        const filtered = allMenuItems.filter(item => item.name.toLowerCase().includes(searchTerm));
+        menuTableBody.innerHTML = '';
+        filtered.forEach(item => {
+            const row = menuTableBody.insertRow();
+            row.insertCell(0).innerText = item.category;
+            row.insertCell(1).innerText = item.name;
+            row.insertCell(2).innerText = item.price;
+            row.insertCell(3).innerText = item.description || '';
+            const actions = row.insertCell(4);
+            const editBtn = document.createElement('button');
+            editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+            editBtn.className = 'edit-btn';
+            editBtn.onclick = () => editMenuItem(item);
+            const delBtn = document.createElement('button');
+            delBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+            delBtn.className = 'delete-btn';
+            delBtn.onclick = () => deleteMenuItem(item.id);
+            actions.appendChild(editBtn);
+            actions.appendChild(delBtn);
+        });
+    }
+    async function deleteMenuItem(id) {
+        if (!confirm('Видалити пункт меню?')) return;
+        try {
+            const res = await fetch(`/api/admin/menu/${id}`, { method: 'DELETE' });
+            if (res.ok) { await loadMenu(); showNotification('✅ Пункт меню видалено'); }
+            else showNotification('❌ Помилка видалення', true);
+        } catch(e) { showNotification('❌ Помилка мережі', true); }
+    }
+    function editMenuItem(item) {
+        currentEditId = item.id;
+        catInput.value = item.category;
+        nameInput.value = item.name;
+        priceInput.value = item.price;
+        descInput.value = item.description || '';
+        submitBtn.innerHTML = '✏️ Оновити';
+        submitBtn.onclick = async () => {
+            const updated = { category: catInput.value.trim(), name: nameInput.value.trim(), price: priceInput.value.trim(), description: descInput.value.trim() };
+            if (!updated.category || !updated.name || !updated.price) { showNotification('Заповніть всі поля', true); return; }
+            try {
+                const res = await fetch(`/api/admin/menu/${currentEditId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updated) });
+                if (res.ok) { resetMenuForm(); await loadMenu(); showNotification('✏️ Пункт оновлено'); }
+                else showNotification('❌ Помилка оновлення', true);
+            } catch(e) { showNotification('❌ Помилка мережі', true); }
+        };
+    }
+    function resetMenuForm() {
+        catInput.value = ''; nameInput.value = ''; priceInput.value = ''; descInput.value = ''; currentEditId = null;
+        submitBtn.innerHTML = '➕ Додати';
+        submitBtn.onclick = addNewMenuItem;
+    }
+    async function addNewMenuItem() {
+        const newItem = { category: catInput.value.trim(), name: nameInput.value.trim(), price: priceInput.value.trim(), description: descInput.value.trim() };
+        if (!newItem.category || !newItem.name || !newItem.price) { showNotification('Заповніть категорію, назву та ціну', true); return; }
+        try {
+            const res = await fetch('/api/admin/menu', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newItem) });
+            if (res.ok) { resetMenuForm(); await loadMenu(); showNotification('➕ Пункт додано'); }
+            else showNotification('❌ Помилка додавання', true);
+        } catch(e) { showNotification('❌ Помилка мережі', true); }
+    }
+    submitBtn.onclick = addNewMenuItem;
+    if (menuSearch) menuSearch.addEventListener('input', () => renderMenuTable());
+
+    // ---------- Відгуки ----------
+    async function loadReviews() {
+        try {
+            const res = await fetch('/api/admin/reviews');
+            allReviews = await res.json();
+            renderReviewsTable();
+        } catch(e) { console.error(e); showNotification('Помилка завантаження відгуків', true); }
+    }
+    function renderReviewsTable() {
+        const searchTerm = reviewsSearch ? reviewsSearch.value.toLowerCase() : '';
+        const filtered = allReviews.filter(r => r.user_name.toLowerCase().includes(searchTerm) || r.text.toLowerCase().includes(searchTerm));
+        reviewsTableBody.innerHTML = '';
+        filtered.forEach(rev => {
+            const row = reviewsTableBody.insertRow();
+            row.insertCell(0).innerText = rev.user_name;
+            const stars = '★'.repeat(rev.rating) + '☆'.repeat(5-rev.rating);
+            row.insertCell(1).innerHTML = `<span style="color:#d4af37;">${stars}</span>`;
+            row.insertCell(2).innerHTML = `<div style="max-width:300px;">${escapeHtml(rev.text.substring(0, 100))}${rev.text.length>100 ? '…' : ''}</div>`;
+            row.insertCell(3).innerText = new Date(rev.timestamp).toLocaleString();
+            const statusCell = row.insertCell(4);
+            if (rev.approved) statusCell.innerHTML = '<span class="status-badge status-approved">Схвалено</span>';
+            else statusCell.innerHTML = '<span class="status-badge status-pending">Очікує</span>';
+            const actions = row.insertCell(5);
+            if (!rev.approved) {
+                const approveBtn = document.createElement('button');
+                approveBtn.innerHTML = '<i class="fas fa-check-circle"></i>';
+                approveBtn.className = 'approve-btn';
+                approveBtn.title = 'Схвалити';
+                approveBtn.onclick = () => approveReview(rev.id);
+                actions.appendChild(approveBtn);
+            }
+            const delBtn = document.createElement('button');
+            delBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+            delBtn.className = 'delete-btn';
+            delBtn.title = 'Видалити';
+            delBtn.onclick = () => deleteReview(rev.id);
+            actions.appendChild(delBtn);
+        });
+    }
+    async function approveReview(id) {
+        try {
+            const res = await fetch(`/api/admin/reviews/${id}/approve`, { method: 'POST' });
+            if (res.ok) {
+                await loadReviews();
+                showNotification('✅ Відгук схвалено');
+            } else showNotification('❌ Помилка схвалення', true);
+        } catch(e) { showNotification('❌ Помилка мережі', true); }
+    }
+    async function deleteReview(id) {
+        if (!confirm('Видалити відгук?')) return;
+        try {
+            const res = await fetch(`/api/admin/reviews/${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                await loadReviews();
+                showNotification('🗑️ Відгук видалено');
+            } else showNotification('❌ Помилка видалення', true);
+        } catch(e) { showNotification('❌ Помилка мережі', true); }
+    }
+    if (reviewsSearch) reviewsSearch.addEventListener('input', () => renderReviewsTable());
+
+    // ---------- Статистика ----------
+    async function loadStats() {
+        try {
+            const res = await fetch('/api/admin/stats');
+            const data = await res.json();
+            document.getElementById('statPageViews').innerText = data.views.reduce((sum, day) => sum + day.count, 0);
+            document.getElementById('statActiveUsers').innerText = data.active_users;
+            document.getElementById('statTotalReviews').innerText = data.total_reviews;
+            document.getElementById('statApprovedReviews').innerText = data.approved_reviews;
+        } catch(e) { console.error(e); }
+    }
+    async function loadChartData() {
+        try {
+            const res = await fetch('/api/admin/stats');
+            const data = await res.json();
+            const labels = data.views.map(v => v.date);
+            const counts = data.views.map(v => v.count);
+            if (viewsChart) viewsChart.destroy();
+            const ctx = document.getElementById('viewsChart').getContext('2d');
+            viewsChart = new Chart(ctx, {
+                type: 'line',
+                data: { labels: labels, datasets: [{ label: 'Перегляди', data: counts, borderColor: '#d4af37', backgroundColor: 'rgba(212,175,55,0.1)', fill: true, tension: 0.3, pointBackgroundColor: '#d4af37' }] },
+                options: { responsive: true, maintainAspectRatio: true, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#e8e0d5' } }, x: { ticks: { color: '#e8e0d5' } } }, plugins: { legend: { labels: { color: '#e8e0d5' } } } }
+            });
+        } catch(e) { console.error(e); }
+    }
+
+    // ---------- Чат (без змін) ----------
+    async function loadChatHistory() {
+        try {
+            const res = await fetch('/api/admin/messages');
+            const messages = await res.json();
+            document.getElementById('totalMsgCount').innerText = messages.length;
+            const container = document.getElementById('adminChatMessages');
+            container.innerHTML = '';
+            messages.reverse().forEach(msg => addMessageToAdmin(msg.id, msg.user_name, msg.text, msg.timestamp));
+        } catch(e) { console.error(e); }
+    }
+    function addMessageToAdmin(id, sender, text, timestamp) {
+        const container = document.getElementById('adminChatMessages');
+        const div = document.createElement('div');
+        div.className = 'message-item';
+        const timeStr = timestamp ? new Date(timestamp).toLocaleString() : new Date().toLocaleString();
+        div.innerHTML = `<strong>${escapeHtml(sender)}</strong><span class="message-time">${timeStr}</span><br>${escapeHtml(text)}<button class="delete-msg" data-id="${id}"><i class="fas fa-trash-alt"></i></button>`;
+        container.appendChild(div);
+        div.querySelector('.delete-msg').addEventListener('click', async (e) => {
+            e.stopPropagation();
+            if (confirm('Видалити повідомлення?')) {
+                const res = await fetch(`/api/admin/message/${id}`, { method: 'DELETE' });
+                if (res.ok) { div.remove(); showNotification('Повідомлення видалено'); }
+                else showNotification('❌ Помилка видалення', true);
+            }
+        });
+        container.scrollTop = container.scrollHeight;
+    }
+    socket.on('new_message', (msg) => {
+        if (document.getElementById('chatTab').classList.contains('hidden') === false) addMessageToAdmin(msg.id, msg.user_name, msg.text, msg.timestamp);
+        showNotification(`💬 Нове повідомлення від ${msg.user_name}`);
+    });
+    document.getElementById('sendAdminReplyBtn').addEventListener('click', () => {
+        const input = document.getElementById('adminReplyInput');
+        const text = input.value.trim();
+        if (!text) return;
+        socket.emit('admin_message', { text, isAdmin: true });
+        input.value = '';
+        showNotification('Відповідь надіслано');
+        setTimeout(() => loadChatHistory(), 500);
+    });
+    document.getElementById('clearChatBtn')?.addEventListener('click', async () => {
+        if (confirm('Очистити всю історію чату?')) {
+            const res = await fetch('/api/admin/messages/clear', { method: 'DELETE' });
+            if (res.ok) { loadChatHistory(); showNotification('Чат очищено'); }
+            else showNotification('❌ Помилка очищення', true);
+        }
+    });
+    document.getElementById('logoutBtn').addEventListener('click', () => window.location.href = '/admin/logout');
+
+    // Запуск
+    loadMenu();
+    loadStats();
+    if (document.getElementById('dashboardTab').classList.contains('hidden') === false) loadChartData();
+    const urlParams = new URLSearchParams(window.location.search);
+    const tab = urlParams.get('tab');
+    if (tab && contents[tab]) document.querySelector(`.nav-item[data-tab="${tab}"]`).click();
+</script>
+</body>
+</html>

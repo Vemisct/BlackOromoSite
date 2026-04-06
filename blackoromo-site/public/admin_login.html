@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вхід | Black Oromo Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0b0a09;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        /* Анімований фон */
+        body::before {
+            content: "☕";
+            font-size: 280px;
+            position: absolute;
+            bottom: -60px;
+            right: -60px;
+            opacity: 0.03;
+            pointer-events: none;
+            animation: rotateSlow 35s infinite linear;
+        }
+        @keyframes rotateSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+            padding: 20px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .login-card {
+            background: rgba(15, 13, 11, 0.95);
+            backdrop-filter: blur(16px);
+            border-radius: 48px;
+            padding: 44px 36px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 30px 50px rgba(0,0,0,0.4);
+            transition: 0.3s;
+        }
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #fff, #d4af37);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .logo span { color: #d4af37; background: none; }
+        .admin-badge {
+            text-align: center;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #d4af37;
+            margin-bottom: 32px;
+            opacity: 0.7;
+        }
+        .input-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+        .input-group i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #d4af37;
+            font-size: 1.1rem;
+        }
+        input {
+            width: 100%;
+            padding: 16px 16px 16px 48px;
+            background: #2a241f;
+            border: 1px solid rgba(212,175,55,0.2);
+            border-radius: 60px;
+            font-size: 1rem;
+            color: #e8e0d5;
+            transition: 0.2s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #d4af37;
+            background: #1f1b17;
+            box-shadow: 0 0 0 3px rgba(212,175,55,0.1);
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #d4af37, #b8902a);
+            border: none;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #0b0a09;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212,175,55,0.3);
+            filter: brightness(1.02);
+        }
+        .error-msg {
+            background: rgba(230, 161, 119, 0.15);
+            border-left: 3px solid #e6a177;
+            padding: 12px 16px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            color: #e6a177;
+            text-align: center;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 28px;
+        }
+        .back-link a {
+            color: #d4af37;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: 0.2s;
+            opacity: 0.7;
+        }
+        .back-link a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+        @media (max-width: 480px) {
+            .login-card { padding: 32px 24px; }
+            .logo { font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <div class="login-card">
+        <div class="logo">Black <span>Oromo</span></div>
+        <div class="admin-badge">Admin Panel</div>
+        <div id="errorMsg" class="error-msg" style="display: none;"></div>
+        <form id="loginForm" action="/admin/login" method="POST">
+            <div class="input-group">
+                <i class="fas fa-user-shield"></i>
+                <input type="text" name="username" placeholder="Логін адміністратора" required autocomplete="off">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" name="password" placeholder="Пароль" required>
+            </div>
+            <button type="submit"><i class="fas fa-arrow-right-to-bracket"></i> Увійти</button>
+        </form>
+        <div class="back-link">
+            <a href="/"><i class="fas fa-arrow-left"></i> Повернутись на сайт</a>
+        </div>
+    </div>
+</div>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('error') === '1') {
+        const errDiv = document.getElementById('errorMsg');
+        errDiv.innerText = '❌ Невірний логін або пароль';
+        errDiv.style.display = 'block';
+    }
+</script>
+</body>
+</html>

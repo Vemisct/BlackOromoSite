@@ -1,0 +1,519 @@
+/* ========== ГЛОБАЛЬНІ СТИЛІ ========== */
+:root {
+    --gold: #d4af37;
+    --gold-dark: #b8902a;
+    --dark-bg: #0b0a09;
+    --card-bg: rgba(20, 18, 16, 0.7);
+    --text-light: #e8e0d5;
+    --text-muted: #c0b19e;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--dark-bg);
+    color: var(--text-light);
+    line-height: 1.5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+/* Ефект пари на фоні */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 20% 40%, rgba(212,175,55,0.03) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+    animation: steamMove 25s infinite alternate;
+}
+
+@keyframes steamMove {
+    0% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+    100% { transform: translate(1%, 1%) scale(1.03); opacity: 0.6; }
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    width: 100%;
+}
+
+/* Анімації */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeInUp 0.6s ease-out forwards; }
+.scroll-animate {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: 0.6s ease-out;
+}
+.scroll-animate.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ========== HEADER ========== */
+header {
+    background: rgba(10, 8, 7, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 16px 0;
+}
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+.logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #f5e7d9, var(--gold));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+.logo span { color: var(--gold); background: none; }
+.nav-links {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.nav-links a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.2s;
+    position: relative;
+}
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--gold);
+    transition: 0.2s;
+}
+.nav-links a:hover::after { width: 100%; }
+.nav-links a:hover { color: var(--gold); }
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(212, 175, 55, 0.15);
+    padding: 6px 16px 6px 12px;
+    border-radius: 40px;
+    backdrop-filter: blur(4px);
+}
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--gold);
+}
+
+/* ========== КНОПКИ ========== */
+.btn {
+    background: var(--gold);
+    color: #0b0a09;
+    padding: 10px 24px;
+    border-radius: 40px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    cursor: pointer;
+}
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+}
+.btn-outline:hover {
+    background: rgba(212, 175, 55, 0.1);
+    transform: translateY(-2px);
+}
+.btn:hover {
+    transform: translateY(-2px);
+    background: var(--gold-dark);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+/* ========== СЕКЦІЇ ========== */
+.section {
+    padding: 70px 0;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+}
+.section-title {
+    font-size: 2.2rem;
+    text-align: center;
+    margin-bottom: 48px;
+    font-family: 'Playfair Display', serif;
+    position: relative;
+}
+.section-title:after {
+    content: '';
+    display: block;
+    width: 70px;
+    height: 3px;
+    background: var(--gold);
+    margin: 16px auto 0;
+    border-radius: 3px;
+}
+
+/* Інформаційні картки */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 32px;
+    align-items: start;
+}
+.info-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(8px);
+    padding: 32px 20px;
+    border-radius: 32px;
+    text-align: center;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    transition: 0.3s;
+}
+.info-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--gold);
+    background: rgba(30, 26, 22, 0.9);
+}
+.info-card i {
+    font-size: 2.5rem;
+    color: var(--gold);
+    margin-bottom: 20px;
+}
+
+/* Меню */
+.menu-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 28px;
+}
+.menu-item {
+    background: var(--card-bg);
+    backdrop-filter: blur(8px);
+    padding: 24px;
+    border-radius: 32px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    transition: 0.3s;
+}
+.menu-item:hover {
+    transform: translateY(-6px);
+    border-color: var(--gold);
+    box-shadow: 0 20px 30px -15px rgba(0,0,0,0.5);
+}
+.menu-item-name {
+    font-weight: 700;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.menu-item-price {
+    color: var(--gold);
+    font-weight: 700;
+}
+.menu-item-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 8px;
+}
+
+/* Відгуки */
+.reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    align-items: start; /* Новий рядок – вирівнює картки по верхньому краю */
+}
+.review-card {
+    background: rgba(20, 18, 16, 0.6);
+    backdrop-filter: blur(4px);
+    padding: 28px;
+    border-radius: 32px;
+    border: 1px solid rgba(212, 175, 55, 0.15);
+    transition: 0.2s;
+}
+.review-card:hover {
+    border-color: var(--gold);
+    background: rgba(30, 26, 22, 0.8);
+}
+.review-text {
+    font-style: italic;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+.review-author {
+    font-weight: 600;
+    color: var(--gold);
+    text-align: right;
+}
+
+/* Чат (сайдбар) */
+.chat-sidebar {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1001;
+}
+.chat-toggle {
+    background: var(--gold);
+    border: none;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    transition: 0.2s;
+    font-size: 1.8rem;
+    color: #0b0a09;
+}
+.chat-toggle:hover {
+    transform: scale(1.05);
+    background: var(--gold-dark);
+}
+.chat-panel {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 350px;
+    height: 500px;
+    background: rgba(20, 18, 16, 0.95);
+    backdrop-filter: blur(12px);
+    border-radius: 28px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transition: 0.3s;
+    transform: scale(0);
+    opacity: 0;
+    transform-origin: bottom right;
+}
+.chat-panel.open {
+    transform: scale(1);
+    opacity: 1;
+}
+.chat-header {
+    background: rgba(0,0,0,0.5);
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--gold);
+}
+.chat-messages-sidebar {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.chat-message {
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 18px;
+    max-width: 85%;
+    align-self: flex-start;
+    word-wrap: break-word;
+}
+.chat-message.me {
+    align-self: flex-end;
+    background: rgba(212, 175, 55, 0.2);
+}
+.chat-message strong { color: var(--gold); }
+.chat-input-sidebar {
+    padding: 12px;
+    display: flex;
+    gap: 8px;
+    border-top: 1px solid rgba(212,175,55,0.2);
+}
+.chat-input-sidebar input {
+    flex: 1;
+    background: #2a241f;
+    border: none;
+    padding: 10px;
+    border-radius: 40px;
+    color: white;
+}
+.chat-input-sidebar button {
+    background: var(--gold);
+    border: none;
+    border-radius: 40px;
+    padding: 0 16px;
+    cursor: pointer;
+}
+
+/* Футер */
+footer {
+    background: #050403;
+    padding: 48px 0 32px;
+    margin-top: auto;
+    border-top: 1px solid rgba(212, 175, 55, 0.2);
+}
+footer a {
+    color: var(--gold);
+    text-decoration: none;
+}
+.footer-links a:hover {
+    color: var(--gold-dark);
+}
+
+/* Адаптивність */
+@media (max-width: 768px) {
+    .navbar { flex-direction: column; text-align: center; }
+    .hero h1 { font-size: 2rem; }
+    .section-title { font-size: 1.8rem; }
+    .menu-items { grid-template-columns: 1fr; }
+    .chat-panel { width: 300px; height: 450px; right: 10px; bottom: 80px; }
+}
+
+/* ========== СТИЛІЗАЦІЯ СКРОЛБАРІВ ========== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #1e1a17;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+    background: #d4af37;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #b8902a;
+}
+
+/* Кнопка "Вгору" (додатково, якщо захочете) */
+.scroll-to-top {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    background: var(--gold);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: 0.3s;
+    z-index: 999;
+}
+.scroll-to-top.visible {
+    opacity: 1;
+}
+.scroll-to-top:hover {
+    background: var(--gold-dark);
+    transform: translateY(-3px);
+}
+
+/* Класи для сторінки меню (якщо використовуються) */
+.menu-filters {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+.filter-btn {
+    background: rgba(20,18,16,0.7);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(212,175,55,0.3);
+    padding: 8px 20px;
+    border-radius: 60px;
+    cursor: pointer;
+    transition: 0.2s;
+    color: var(--text-light);
+    font-weight: 500;
+}
+.filter-btn.active, .filter-btn:hover {
+    background: var(--gold);
+    color: #0b0a09;
+    border-color: var(--gold);
+}
+.menu-section {
+    margin-bottom: 3rem;
+    animation: fadeInUp 0.4s ease-out;
+}
+.menu-section-title {
+    font-size: 2rem;
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 1.5rem;
+    position: relative;
+    display: inline-block;
+}
+.menu-section-title:after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: var(--gold);
+    border-radius: 3px;
+}
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.8rem;
+}
+.menu-card {
+    background: rgba(20,18,16,0.7);
+    backdrop-filter: blur(8px);
+    border-radius: 32px;
+    padding: 1.5rem;
+    border: 1px solid rgba(212,175,55,0.2);
+    transition: 0.3s;
+}
+.menu-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--gold);
+}
+.menu-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+}
+.menu-card-price {
+    color: var(--gold);
+    font-weight: 700;
+}

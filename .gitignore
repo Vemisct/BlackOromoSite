@@ -1,0 +1,4 @@
+node_modules/
+blackoromo.db
+*.log
+.DS_Store
