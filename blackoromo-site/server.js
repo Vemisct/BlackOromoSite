@@ -54,7 +54,7 @@ app.get('/auth/google/callback',
 app.get('/login-failed', (req, res) => res.send('<h3>Помилка входу</h3><a href="/">На головну</a>'));
 app.get('/logout', (req, res) => { req.logout(() => res.redirect('/')); });
 
-// ---------- База даних (better-sqlite3) ----------
+// ---------- База даних ----------
 const db = new Database('./blackoromo.db');
 db.pragma('journal_mode = WAL');
 
@@ -82,6 +82,11 @@ db.exec(`CREATE TABLE IF NOT EXISTS page_views (
 db.exec(`CREATE TABLE IF NOT EXISTS user_sessions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id TEXT, user_email TEXT, last_active DATETIME DEFAULT CURRENT_TIMESTAMP
+)`);
+// Нова таблиця для повідомлень з контактної форми
+db.exec(`CREATE TABLE IF NOT EXISTS contacts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT, email TEXT, message TEXT, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 )`);
 
 // Адмін за замовчуванням
@@ -141,6 +146,21 @@ app.post('/api/reviews', (req, res) => {
     if (!rating || !text) return res.status(400).json({ error: 'Заповніть всі поля' });
     db.prepare(`INSERT INTO reviews (user_name, user_email, rating, text, approved) VALUES (?, ?, ?, ?, 0)`).run(req.user.name, req.user.email, rating, text);
     res.json({ success: true, message: 'Відгук додано, після перевірки він з\'явиться на сайті' });
+});
+
+// ---------- Новий API для контактної форми ----------
+app.post('/api/contact', (req, res) => {
+    const { name, email, message } = req.body;
+    if (!name || !email || !message) {
+        return res.status(400).json({ error: 'Всі поля обов\'язкові' });
+    }
+    try {
+        db.prepare(`INSERT INTO contacts (name, email, message) VALUES (?, ?, ?)`).run(name, email, message);
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Помилка збереження повідомлення' });
+    }
 });
 
 // ---------- API для адміна ----------
@@ -204,7 +224,7 @@ app.put('/api/admin/menu/:id', isAdmin, (req, res) => {
     res.json({ success: true });
 });
 
-// ---------- Адмін-панель (сторінки) ----------
+// ---------- Адмін-панель ----------
 app.get('/admin/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'admin_login.html'));
 });
@@ -235,6 +255,7 @@ app.get('/about', (req, res) => res.sendFile(path.join(__dirname, 'public', 'abo
 app.get('/reviews', (req, res) => res.sendFile(path.join(__dirname, 'public', 'reviews.html')));
 app.get('/chat', (req, res) => res.sendFile(path.join(__dirname, 'public', 'chat.html')));
 app.get('/menu', (req, res) => res.sendFile(path.join(__dirname, 'public', 'menu.html')));
+app.get('/contacts', (req, res) => res.sendFile(path.join(__dirname, 'public', 'contacts.html'))); // Додано
 
 // WebSocket
 io.on('connection', (socket) => {

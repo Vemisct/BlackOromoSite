@@ -47,6 +47,7 @@
     function addMessage(userName, text, timestamp, isMe = false) {
         const msgDiv = document.createElement('div');
         msgDiv.className = 'chat-message';
+        // Вже є, але додамо клас для своїх повідомлень
         if (isMe) msgDiv.classList.add('me');
         const timeStr = timestamp ? new Date(timestamp).toLocaleTimeString() : new Date().toLocaleTimeString();
         msgDiv.innerHTML = `<strong>${escapeHtml(userName)}</strong> <small>${timeStr}</small><br>${escapeHtml(text)}`;

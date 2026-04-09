@@ -247,8 +247,9 @@
             initFilters();
             renderMenu();
         } catch(e) {
-            console.error(e);
-            document.getElementById('menuSections').innerHTML = '<p style="text-align:center;">Помилка завантаження меню</p>';
+        document.getElementById('menuSections').innerHTML = '<p class="error">Помилка завантаження меню</p>';
+        } finally {
+            spinner.style.display = 'none';
         }
     }
 
@@ -359,5 +360,10 @@
     checkUser();
     loadMenuData();
 </script>
+<!-- Додати перед </body> -->
+<div id="menuLoadingSpinner" style="display: none; text-align: center; padding: 40px;">
+    <i class="fas fa-spinner fa-spin fa-2x"></i> Завантаження...
+</div>
+
 </body>
 </html>
