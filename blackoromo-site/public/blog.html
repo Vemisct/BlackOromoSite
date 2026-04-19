@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Блог | Black Oromo Coffee</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .coming-soon {
+            text-align: center;
+            padding: 100px 20px;
+        }
+        .coming-soon i {
+            font-size: 5rem;
+            color: #d4af37;
+            margin-bottom: 30px;
+        }
+        .coming-soon h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">Black <span>Oromo</span> Coffee</div>
+            <div class="nav-links">
+                <a href="/">Головна</a>
+                <a href="/menu">Меню</a>
+                <a href="/reviews">Відгуки</a>
+                <a href="/about">Про нас</a>
+                <a href="/contacts">Контакти</a>
+                <a href="/promotions">Акції</a>
+                <a href="/blog">Блог</a>
+                <div id="userWidget"></div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+        <div class="coming-soon">
+            <i class="fas fa-book-open"></i>
+            <h1>Блог</h1>
+            <p>Сторінка в розробці. Скоро тут будуть цікаві статті про каву та наш заклад!</p>
+            <a href="/" class="btn" style="margin-top: 30px; display: inline-block;">На головну</a>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <div class="logo" style="font-size: 1.4rem;">Black <span>Oromo</span> Coffee</div>
+            <div class="footer-links">
+                <a href="/">Головна</a> &nbsp;|&nbsp;
+                <a href="/menu">Меню</a> &nbsp;|&nbsp;
+                <a href="/reviews">Відгуки</a> &nbsp;|&nbsp;
+                <a href="/about">Про нас</a> &nbsp;|&nbsp;
+                <a href="/contacts">Контакти</a> &nbsp;|&nbsp;
+                <a href="/promotions">Акції</a> &nbsp;|&nbsp;
+                <a href="/blog">Блог</a>
+            </div>
+            <div><a href="/admin/login" style="color:#d4af37; font-size:0.8rem;">Вхід для адміна</a></div>
+        </div>
+        <p style="margin-top: 32px;">© 2026 Black Oromo Coffee. Ваша кава з любов'ю.</p>
+    </div>
+</footer>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/chat-sidebar.js"></script>
+<script>
+    async function checkUser() {
+        try {
+            const res = await fetch('/api/user');
+            if (res.ok) {
+                const user = await res.json();
+                document.getElementById('userWidget').innerHTML = `
+                    <div class="user-info">
+                        <img src="${user.photo || 'https://ui-avatars.com/api/?background=d4af37&color=0b0a09&name='+encodeURIComponent(user.name)}" class="user-avatar">
+                        <span>${user.name}</span>
+                        <a href="/logout" class="btn-outline" style="padding:4px 12px;">Вийти</a>
+                    </div>
+                `;
+            } else {
+                document.getElementById('userWidget').innerHTML = `<a href="/auth/google" class="btn"><i class="fab fa-google"></i> Увійти через Google</a>`;
+            }
+        } catch(e) { console.log(e); }
+    }
+    checkUser();
+</script>
+</body>
+</html>
