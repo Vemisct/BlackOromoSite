@@ -14,6 +14,10 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
+// ========== НАЛАШТУВАННЯ EJS ==========
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -23,14 +27,13 @@ app.use(express.static('public'));
 let pool;
 async function createPool() {
     try {
-        // Читаємо сертифікат із Secret File (Render)
         let caCert = null;
         try {
             caCert = fs.readFileSync('/etc/secrets/ca.pem', 'utf8');
+            console.log('✅ Сертифікат SSL завантажено');
         } catch (err) {
-            console.warn('⚠️ Файл /etc/secrets/ca.pem не знайдено, SSL буде вимкнено');
+            console.warn('⚠️ Файл /etc/secrets/ca.pem не знайдено, SSL вимкнено');
         }
-
         pool = mysql.createPool({
             host: process.env.DB_HOST,
             port: parseInt(process.env.DB_PORT) || 3306,
@@ -42,8 +45,6 @@ async function createPool() {
             connectionLimit: 10,
             queueLimit: 0
         });
-
-        // Перевірка з'єднання
         const conn = await pool.getConnection();
         console.log('✅ Підключено до MySQL (Aiven)');
         conn.release();
@@ -54,7 +55,7 @@ async function createPool() {
 }
 createPool();
 
-// Сесії (MemoryStore – для простоти)
+// ========== СЕСІЇ ==========
 app.use(session({
     secret: process.env.SESSION_SECRET || 'superSecretKey_blackOromo2026',
     resave: false,
@@ -62,10 +63,10 @@ app.use(session({
     cookie: { secure: false }
 }));
 
+// ========== PASSPORT (GOOGLE OAUTH) ==========
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Google OAuth
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID || '482596293443-8pihmlhgqnd3br0chpn9rihcbopcnp4l.apps.googleusercontent.com',
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || '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',
@@ -91,7 +92,7 @@ app.get('/auth/google/callback',
 app.get('/login-failed', (req, res) => res.send('<h3>Помилка входу</h3><a href="/">На головну</a>'));
 app.get('/logout', (req, res) => { req.logout(() => res.redirect('/')); });
 
-// ========== ІНІЦІАЛІЗАЦІЯ ТАБЛИЦЬ (MySQL синтаксис) ==========
+// ========== ІНІЦІАЛІЗАЦІЯ ТАБЛИЦЬ ==========
 async function initTables() {
     try {
         const connection = await pool.getConnection();
@@ -157,11 +158,12 @@ async function initTables() {
             )
         `);
 
-        // Перевірка адміна
+        // Адмін за замовчуванням
         const [admins] = await connection.query(`SELECT id FROM admins WHERE username = 'admin'`);
         if (admins.length === 0) {
             const hash = bcrypt.hashSync('password123', 10);
             await connection.query(`INSERT INTO admins (username, password_hash) VALUES (?, ?)`, ['admin', hash]);
+            console.log('✅ Створено адміна за замовчуванням (admin / password123)');
         }
         connection.release();
         console.log('✅ Таблиці створено/перевірено (MySQL)');
@@ -171,7 +173,15 @@ async function initTables() {
 }
 initTables();
 
-// Middleware для підрахунку переглядів
+// ========== MIDDLEWARE ==========
+// Передача даних користувача в шаблони
+app.use((req, res, next) => {
+    res.locals.user = req.user || null;
+    res.locals.currentPath = req.path;
+    next();
+});
+
+// Підрахунок переглядів сторінок
 app.use(async (req, res, next) => {
     if (req.path.startsWith('/api') || req.path.startsWith('/admin') || req.path.includes('.') || req.path === '/socket.io/') {
         return next();
@@ -221,8 +231,7 @@ app.post('/api/message', async (req, res) => {
             `INSERT INTO messages (user_id, user_name, user_email, text) VALUES (?, ?, ?, ?)`,
             [req.user.id, req.user.name, req.user.email, text.trim()]
         );
-        const newId = result.insertId;
-        io.emit('new_message', { id: newId, user_name: req.user.name, text: text.trim(), timestamp: new Date() });
+        io.emit('new_message', { id: result.insertId, user_name: req.user.name, text: text.trim(), timestamp: new Date() });
         res.json({ success: true });
     } catch(e) { res.status(500).json({ error: 'Помилка сервера' }); }
 });
@@ -247,7 +256,6 @@ app.post('/api/reviews', async (req, res) => {
     } catch(e) { res.status(500).json({ error: 'Помилка сервера' }); }
 });
 
-// Контактна форма
 app.post('/api/contact', async (req, res) => {
     const { name, email, message } = req.body;
     if (!name || !email || !message) return res.status(400).json({ error: 'Всі поля обов\'язкові' });
@@ -317,33 +325,47 @@ app.put('/api/admin/menu/:id', isAdmin, async (req, res) => {
     } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
-// Адмін-панель
-app.get('/admin/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin_login.html')));
+// ========== АДМІН-ПАНЕЛЬ (СТАТИЧНІ ФАЙЛИ) ==========
+app.get('/admin/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin_login.html'));
+});
 app.post('/admin/login', async (req, res) => {
     const { username, password } = req.body;
     try {
         const [rows] = await pool.query(`SELECT * FROM admins WHERE username = ?`, [username]);
-        if (rows.length === 0 || !bcrypt.compareSync(password, rows[0].password_hash)) return res.redirect('/admin/login?error=1');
+        if (rows.length === 0 || !bcrypt.compareSync(password, rows[0].password_hash)) {
+            return res.redirect('/admin/login?error=1');
+        }
         req.session.admin = { id: rows[0].id, username: rows[0].username };
         res.redirect('/admin');
-    } catch(e) { res.redirect('/admin/login?error=1'); }
+    } catch(e) {
+        res.redirect('/admin/login?error=1');
+    }
 });
-app.get('/admin/logout', (req, res) => { req.session.destroy(); res.redirect('/admin/login'); });
-app.get('/admin', isAdmin, (req, res) => res.sendFile(path.join(__dirname, 'public', 'admin.html')));
+app.get('/admin/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/admin/login');
+});
+app.get('/admin', isAdmin, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
 
+// ========== API ДЛЯ ОТРИМАННЯ ДАНИХ КОРИСТУВАЧА ==========
 app.get('/api/user', (req, res) => {
     if (req.user) res.json(req.user);
     else res.status(401).json({ error: 'not logged in' });
 });
 
-// Сторінки
-app.get('/about', (req, res) => res.sendFile(path.join(__dirname, 'public', 'about.html')));
-app.get('/reviews', (req, res) => res.sendFile(path.join(__dirname, 'public', 'reviews.html')));
-app.get('/chat', (req, res) => res.sendFile(path.join(__dirname, 'public', 'chat.html')));
-app.get('/menu', (req, res) => res.sendFile(path.join(__dirname, 'public', 'menu.html')));
-app.get('/contacts', (req, res) => res.sendFile(path.join(__dirname, 'public', 'contacts.html')));
+// ========== СТОРІНКИ (EJS) ==========
+app.get('/', (req, res) => res.render('index', { title: 'Головна', description: 'Преміальна кава у Крижополі' }));
+app.get('/about', (req, res) => res.render('about', { title: 'Про нас', description: 'Історія та особливості Black Oromo Coffee' }));
+app.get('/menu', (req, res) => res.render('menu', { title: 'Меню', description: 'Наше кавове та кулінарне меню' }));
+app.get('/reviews', (req, res) => res.render('reviews', { title: 'Відгуки', description: 'Що говорять наші гості' }));
+app.get('/contacts', (req, res) => res.render('contacts', { title: 'Контакти', description: 'Як нас знайти та зв\'язатися' }));
+app.get('/promotions', (req, res) => res.render('promotions', { title: 'Акції', description: 'Спеціальні пропозиції та події' }));
+app.get('/blog', (req, res) => res.render('blog', { title: 'Блог', description: 'Статті про каву та життя закладу' }));
 
-// WebSocket
+// ========== WEBSOCKET (ЧАТ) ==========
 io.on('connection', (socket) => {
     console.log('Client connected');
     socket.on('admin_message', async (data) => {
@@ -357,5 +379,6 @@ io.on('connection', (socket) => {
     });
 });
 
+// ========== ЗАПУСК СЕРВЕРА ==========
 const PORT = process.env.PORT || 8080;
-server.listen(PORT, '0.0.0.0', () => console.log(`✅ Сервер (MySQL): http://localhost:${PORT}`));
+server.listen(PORT, '0.0.0.0', () => console.log(`✅ Сервер (MySQL + EJS): http://localhost:${PORT}`));
