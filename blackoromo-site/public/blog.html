@@ -2,90 +2,290 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Блог | Black Oromo Coffee</title>
+    <meta name="description" content="Цікаві статті про каву, рецепти, новини кав'ярні Black Oromo Coffee. Читайте та надихайтеся!">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/style.css">
     <style>
-        .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; margin: 3rem 0; }
-        .blog-card { background: rgba(20,18,16,0.7); backdrop-filter: blur(8px); border-radius: 32px; overflow: hidden; transition: 0.3s; border: 1px solid rgba(212,175,55,0.2); text-decoration: none; color: inherit; display: block; }
-        .blog-card:hover { transform: translateY(-5px); border-color: var(--gold); }
-        .blog-card img { width: 100%; height: 200px; object-fit: cover; background: #2a241f; }
-        .blog-card-content { padding: 1.5rem; }
-        .blog-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--gold); }
-        .blog-date { font-size: 0.8rem; opacity: 0.7; margin-bottom: 1rem; }
-        .blog-excerpt { color: var(--text-muted); line-height: 1.5; }
+        /* Додаткові стилі для сторінки блогу */
+        .blog-hero {
+            text-align: center;
+            padding: 50px 20px 30px;
+            background: radial-gradient(circle at 20% 30%, rgba(212,175,55,0.1) 0%, transparent 80%);
+            border-radius: 0 0 60px 60px;
+            margin-bottom: 20px;
+        }
+        .blog-hero h1 {
+            font-size: 2.8rem;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 15px;
+        }
+        .blog-hero p {
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        .blog-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 40px 0 20px;
+        }
+        .stat-badge {
+            background: rgba(20,18,16,0.6);
+            backdrop-filter: blur(4px);
+            border-radius: 60px;
+            padding: 10px 24px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .stat-badge i {
+            font-size: 1.5rem;
+            color: var(--gold);
+        }
+        .stat-badge .value {
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: var(--gold);
+            margin-right: 5px;
+        }
+        .blog-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin: 50px 0;
+        }
+        .blog-card {
+            flex: 0 0 320px;
+            background: rgba(20,18,16,0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 32px;
+            overflow: hidden;
+            transition: 0.3s;
+            border: 1px solid rgba(212,175,55,0.2);
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+        }
+        .blog-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--gold);
+            box-shadow: 0 20px 30px -15px rgba(212,175,55,0.3);
+        }
+        .blog-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #2a241f;
+            transition: 0.3s;
+        }
+        .blog-card:hover img {
+            transform: scale(1.02);
+        }
+        .blog-card-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .blog-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--gold);
+        }
+        .blog-date {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .blog-date i {
+            color: var(--gold);
+        }
+        .blog-excerpt {
+            color: var(--text-muted);
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+        .read-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 1rem;
+            color: var(--gold);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(20,18,16,0.5);
+            border-radius: 48px;
+            width: 100%;
+        }
+        .spinner {
+            display: flex;
+            justify-content: center;
+            padding: 60px;
+        }
+        @media (max-width: 768px) {
+            .blog-hero h1 { font-size: 2rem; }
+            .blog-card { flex: 0 0 100%; max-width: 350px; }
+            .stat-badge { padding: 6px 16px; }
+            .stat-badge .value { font-size: 1.2rem; }
+        }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="navbar">
-                <div class="logo">Black <span>Oromo</span> Coffee</div>
-                <div class="nav-links">
-                    <a href="/">Головна</a>
-                    <a href="/menu">Меню</a>
-                    <a href="/reviews">Відгуки</a>
-                    <a href="/about">Про нас</a>
-                    <a href="/contacts">Контакти</a>
-                    <a href="/promotions">Акції</a>
-                    <a href="/blog">Блог</a>
-                    <div id="userWidget"></div>
-                </div>
+
+<header>
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">Black <span>Oromo</span> Coffee</div>
+            <div class="nav-links">
+                <a href="/">Головна</a>
+                <a href="/menu">Меню</a>
+                <a href="/reviews">Відгуки</a>
+                <a href="/about">Про нас</a>
+                <a href="/contacts">Контакти</a>
+                <a href="/promotions">Акції</a>
+                <a href="/blog">Блог</a>
+                <div id="userWidget"></div>
             </div>
         </div>
-    </header>
-    <main>
-        <div class="container" style="padding: 40px 0 60px;">
-            <h2 class="section-title">Блог</h2>
-            <div id="blogList" class="blog-grid"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i> Завантаження...</div></div>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+        <!-- Hero -->
+        <div class="blog-hero fade-in">
+            <h1>Наш блог</h1>
+            <p>Цікаві статті про каву, рецепти, секрети бариста та новини нашого закладу</p>
         </div>
-    </main>
-    <footer>
-        <div class="container">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
-                <div class="logo" style="font-size: 1.4rem;">Black <span>Oromo</span> Coffee</div>
-                <div class="footer-links">
-                    <a href="/">Головна</a> &nbsp;|&nbsp;
-                    <a href="/menu">Меню</a> &nbsp;|&nbsp;
-                    <a href="/reviews">Відгуки</a> &nbsp;|&nbsp;
-                    <a href="/about">Про нас</a> &nbsp;|&nbsp;
-                    <a href="/contacts">Контакти</a> &nbsp;|&nbsp;
-                    <a href="/promotions">Акції</a> &nbsp;|&nbsp;
-                    <a href="/blog">Блог</a>
-                </div>
-                <div><a href="/admin/login" style="color:#d4af37; font-size:0.8rem;">Вхід для адміна</a></div>
+
+        <!-- Статистика -->
+        <div class="blog-stats scroll-animate">
+            <div class="stat-badge"><i class="fas fa-newspaper"></i> <span class="value" id="postsCount">0</span> <span>статей</span></div>
+            <div class="stat-badge"><i class="fas fa-coffee"></i> <span>щотижневі оновлення</span></div>
+        </div>
+
+        <!-- Список постів -->
+        <div id="blogList" class="blog-grid scroll-animate">
+            <div class="spinner"><i class="fas fa-spinner fa-spin fa-2x"></i></div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <div class="logo" style="font-size: 1.4rem;">Black <span>Oromo</span> Coffee</div>
+            <div class="footer-links">
+                <a href="/">Головна</a> &nbsp;|&nbsp;
+                <a href="/menu">Меню</a> &nbsp;|&nbsp;
+                <a href="/reviews">Відгуки</a> &nbsp;|&nbsp;
+                <a href="/about">Про нас</a> &nbsp;|&nbsp;
+                <a href="/contacts">Контакти</a> &nbsp;|&nbsp;
+                <a href="/promotions">Акції</a> &nbsp;|&nbsp;
+                <a href="/blog">Блог</a>
             </div>
-            <p style="margin-top: 32px;">© 2026 Black Oromo Coffee. Ваша кава з любов'ю.</p>
+            <div><a href="/admin/login" style="color:#d4af37; font-size:0.8rem;">Вхід для адміна</a></div>
         </div>
-    </footer>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/chat-sidebar.js"></script>
-    <script>
-        async function loadPosts() {
-            try {
-                const res = await fetch('/api/posts');
-                const posts = await res.json();
-                const container = document.getElementById('blogList');
-                if (posts.length === 0) {
-                    container.innerHTML = '<div class="empty-state"><i class="fas fa-book-open"></i><p>Поки немає статей. Завітайте пізніше!</p></div>';
-                    return;
-                }
-                container.innerHTML = posts.map(p => `
-                    <a href="/blog-post.html?id=${p.id}" class="blog-card">
-                        ${p.image_url ? `<img src="${p.image_url}" alt="${p.title}">` : '<div style="height:200px;background:#2a241f;display:flex;align-items:center;justify-content:center;"><i class="fas fa-newspaper" style="font-size:3rem;color:var(--gold);"></i></div>'}
-                        <div class="blog-card-content">
-                            <div class="blog-title">${escapeHtml(p.title)}</div>
-                            <div class="blog-date">${p.date}</div>
-                            <div class="blog-excerpt">${escapeHtml(p.excerpt || '')}</div>
-                        </div>
-                    </a>
-                `).join('');
-            } catch(e) { container.innerHTML = '<div class="empty-state">Помилка завантаження</div>'; }
+        <div style="text-align: center; margin-top: 24px; font-size: 0.75rem; opacity: 0.6;">
+            Version: BOS-1.7.24-R
+        </div>
+        <p style="margin-top: 16px;">© 2026 Black Oromo Coffee. Ваша кава з любов'ю.</p>
+    </div>
+</footer>
+
+<div id="scrollToTopBtn" class="scroll-to-top">
+    <i class="fas fa-arrow-up"></i>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/chat-sidebar.js"></script>
+<script>
+    // Кнопка "Вгору"
+    const scrollBtn = document.getElementById('scrollToTopBtn');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) scrollBtn.classList.add('visible');
+        else scrollBtn.classList.remove('visible');
+    });
+    scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    async function loadPosts() {
+        const container = document.getElementById('blogList');
+        container.innerHTML = '<div class="spinner"><i class="fas fa-spinner fa-spin fa-2x"></i></div>';
+        try {
+            const res = await fetch('/api/posts');
+            const posts = await res.json();
+            document.getElementById('postsCount').innerText = posts.length;
+            if (posts.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-book-open"></i><p>Поки немає статей. Завітайте пізніше!</p></div>';
+                return;
+            }
+            container.innerHTML = posts.map(p => `
+                <a href="/blog-post.html?id=${p.id}" class="blog-card">
+                    ${p.image_url ? `<img src="${p.image_url}" alt="${escapeHtml(p.title)}">` : '<div style="height:200px;background:#2a241f;display:flex;align-items:center;justify-content:center;"><i class="fas fa-newspaper" style="font-size:3rem;color:var(--gold);"></i></div>'}
+                    <div class="blog-card-content">
+                        <div class="blog-title">${escapeHtml(p.title)}</div>
+                        <div class="blog-date"><i class="far fa-calendar-alt"></i> ${p.date || 'нещодавно'}</div>
+                        <div class="blog-excerpt">${escapeHtml(p.excerpt || '')}</div>
+                        <div class="read-more">Читати далі <i class="fas fa-arrow-right"></i></div>
+                    </div>
+                </a>
+            `).join('');
+        } catch(e) {
+            console.error(e);
+            container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Помилка завантаження. Спробуйте пізніше.</p></div>';
         }
-        function escapeHtml(str) { return str.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':m==='>'?'&gt;':m); }
-        loadPosts();
-    </script>
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+    }
+
+    async function checkUser() {
+        try {
+            const res = await fetch('/api/user');
+            if (res.ok) {
+                const user = await res.json();
+                document.getElementById('userWidget').innerHTML = `
+                    <div class="user-info">
+                        <img src="${user.photo || 'https://ui-avatars.com/api/?background=d4af37&color=0b0a09&name='+encodeURIComponent(user.name)}" class="user-avatar">
+                        <span>${user.name}</span>
+                        <a href="/logout" class="btn-outline" style="padding:4px 12px;">Вийти</a>
+                    </div>
+                `;
+            } else {
+                document.getElementById('userWidget').innerHTML = `<a href="/auth/google" class="btn"><i class="fab fa-google"></i> Увійти через Google</a>`;
+            }
+        } catch(e) { console.log(e); }
+    }
+    checkUser();
+
+    // Анімація появи при скролі
+    const animated = document.querySelectorAll('.scroll-animate');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+    }, { threshold: 0.2 });
+    animated.forEach(el => observer.observe(el));
+
+    loadPosts();
+</script>
 </body>
 </html>

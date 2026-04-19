@@ -2,88 +2,199 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Стаття | Black Oromo Coffee</title>
+    <meta name="description" content="Читайте цікаві статті про каву, рецепти та новини Black Oromo Coffee">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/style.css">
     <style>
-        .post-container { max-width: 800px; margin: 0 auto; background: rgba(20,18,16,0.5); border-radius: 48px; padding: 2rem; }
-        .post-title { font-size: 2.2rem; font-family: 'Playfair Display', serif; margin-bottom: 1rem; }
-        .post-date { color: var(--gold); margin-bottom: 2rem; display: block; }
-        .post-image { width: 100%; border-radius: 32px; margin: 1.5rem 0; }
-        .post-content { line-height: 1.8; font-size: 1.05rem; }
-        .post-content p { margin-bottom: 1.2rem; }
-        .back-link { display: inline-block; margin-top: 2rem; color: var(--gold); }
+        .post-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(20,18,16,0.5);
+            backdrop-filter: blur(8px);
+            border-radius: 48px;
+            padding: 2rem;
+            animation: fadeInUp 0.5s ease-out;
+        }
+        .post-title {
+            font-size: 2.2rem;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+        .post-date {
+            color: var(--gold);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        .post-image {
+            width: 100%;
+            border-radius: 32px;
+            margin: 1.5rem 0;
+        }
+        .post-content {
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+        .post-content p {
+            margin-bottom: 1.2rem;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 2rem;
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .back-link:hover {
+            transform: translateX(-3px);
+        }
+        .spinner {
+            display: flex;
+            justify-content: center;
+            padding: 60px;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 768px) {
+            .post-title { font-size: 1.6rem; }
+            .post-container { padding: 1.5rem; margin: 0 16px; }
+        }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="navbar">
-                <div class="logo">Black <span>Oromo</span> Coffee</div>
-                <div class="nav-links">
-                    <a href="/">Головна</a>
-                    <a href="/menu">Меню</a>
-                    <a href="/reviews">Відгуки</a>
-                    <a href="/about">Про нас</a>
-                    <a href="/contacts">Контакти</a>
-                    <a href="/promotions">Акції</a>
-                    <a href="/blog">Блог</a>
-                    <div id="userWidget"></div>
-                </div>
+
+<header>
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">Black <span>Oromo</span> Coffee</div>
+            <div class="nav-links">
+                <a href="/">Головна</a>
+                <a href="/menu">Меню</a>
+                <a href="/reviews">Відгуки</a>
+                <a href="/about">Про нас</a>
+                <a href="/contacts">Контакти</a>
+                <a href="/promotions">Акції</a>
+                <a href="/blog">Блог</a>
+                <div id="userWidget"></div>
             </div>
         </div>
-    </header>
-    <main>
-        <div class="container" style="padding: 40px 0 60px;">
-            <div id="postContent" class="post-container"><div style="text-align:center;"><i class="fas fa-spinner fa-spin"></i> Завантаження...</div></div>
+    </div>
+</header>
+
+<main>
+    <div class="container" style="padding: 40px 0 60px;">
+        <div id="postContent" class="post-container">
+            <div class="spinner"><i class="fas fa-spinner fa-spin fa-2x"></i></div>
         </div>
-    </main>
-    <footer>
-        <div class="container">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
-                <div class="logo" style="font-size: 1.4rem;">Black <span>Oromo</span> Coffee</div>
-                <div class="footer-links">
-                    <a href="/">Головна</a> &nbsp;|&nbsp;
-                    <a href="/menu">Меню</a> &nbsp;|&nbsp;
-                    <a href="/reviews">Відгуки</a> &nbsp;|&nbsp;
-                    <a href="/about">Про нас</a> &nbsp;|&nbsp;
-                    <a href="/contacts">Контакти</a> &nbsp;|&nbsp;
-                    <a href="/promotions">Акції</a> &nbsp;|&nbsp;
-                    <a href="/blog">Блог</a>
-                </div>
-                <div><a href="/admin/login" style="color:#d4af37; font-size:0.8rem;">Вхід для адміна</a></div>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <div class="logo" style="font-size: 1.4rem;">Black <span>Oromo</span> Coffee</div>
+            <div class="footer-links">
+                <a href="/">Головна</a> &nbsp;|&nbsp;
+                <a href="/menu">Меню</a> &nbsp;|&nbsp;
+                <a href="/reviews">Відгуки</a> &nbsp;|&nbsp;
+                <a href="/about">Про нас</a> &nbsp;|&nbsp;
+                <a href="/contacts">Контакти</a> &nbsp;|&nbsp;
+                <a href="/promotions">Акції</a> &nbsp;|&nbsp;
+                <a href="/blog">Блог</a>
             </div>
-            <p style="margin-top: 32px;">© 2026 Black Oromo Coffee. Ваша кава з любов'ю.</p>
+            <div><a href="/admin/login" style="color:#d4af37; font-size:0.8rem;">Вхід для адміна</a></div>
         </div>
-    </footer>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/chat-sidebar.js"></script>
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const postId = urlParams.get('id');
-        if (!postId) {
-            document.getElementById('postContent').innerHTML = '<div class="post-container"><p>Невірний запит</p><a href="/blog.html" class="back-link">← Назад до блогу</a></div>';
-        } else {
-            fetch(`/api/posts/${postId}`)
-                .then(res => res.json())
-                .then(post => {
-                    if (!post || !post.id) throw new Error();
-                    document.title = `${post.title} | Black Oromo Coffee`;
-                    document.getElementById('postContent').innerHTML = `
-                        <h1 class="post-title">${escapeHtml(post.title)}</h1>
-                        <div class="post-date">${new Date(post.created_at).toLocaleDateString('uk-UA')}</div>
-                        ${post.image_url ? `<img src="${post.image_url}" class="post-image" alt="${post.title}">` : ''}
-                        <div class="post-content">${escapeHtml(post.content).replace(/\n/g, '<br>')}</div>
+        <div style="text-align: center; margin-top: 24px; font-size: 0.75rem; opacity: 0.6;">
+            Version: BOS-1.7.24-R
+        </div>
+        <p style="margin-top: 16px;">© 2026 Black Oromo Coffee. Ваша кава з любов'ю.</p>
+    </div>
+</footer>
+
+<div id="scrollToTopBtn" class="scroll-to-top">
+    <i class="fas fa-arrow-up"></i>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/chat-sidebar.js"></script>
+<script>
+    // Кнопка "Вгору"
+    const scrollBtn = document.getElementById('scrollToTopBtn');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) scrollBtn.classList.add('visible');
+        else scrollBtn.classList.remove('visible');
+    });
+    scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const postId = urlParams.get('id');
+    const container = document.getElementById('postContent');
+
+    if (!postId) {
+        container.innerHTML = `
+            <div class="post-container">
+                <p>Невірний запит</p>
+                <a href="/blog.html" class="back-link"><i class="fas fa-arrow-left"></i> Назад до блогу</a>
+            </div>
+        `;
+    } else {
+        fetch(`/api/posts/${postId}`)
+            .then(res => res.json())
+            .then(post => {
+                if (!post || !post.id) throw new Error();
+                document.title = `${post.title} | Black Oromo Coffee`;
+                container.innerHTML = `
+                    <h1 class="post-title">${escapeHtml(post.title)}</h1>
+                    <div class="post-date"><i class="far fa-calendar-alt"></i> ${new Date(post.created_at).toLocaleDateString('uk-UA')}</div>
+                    ${post.image_url ? `<img src="${post.image_url}" class="post-image" alt="${escapeHtml(post.title)}">` : ''}
+                    <div class="post-content">${escapeHtml(post.content).replace(/\n/g, '<br>')}</div>
+                    <a href="/blog.html" class="back-link"><i class="fas fa-arrow-left"></i> Назад до блогу</a>
+                `;
+            })
+            .catch(() => {
+                container.innerHTML = `
+                    <div class="post-container">
+                        <p>Статтю не знайдено</p>
                         <a href="/blog.html" class="back-link"><i class="fas fa-arrow-left"></i> Назад до блогу</a>
-                    `;
-                })
-                .catch(() => {
-                    document.getElementById('postContent').innerHTML = '<div class="post-container"><p>Статтю не знайдено</p><a href="/blog.html" class="back-link">← Назад до блогу</a></div>';
-                });
-        }
-        function escapeHtml(str) { return str.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':m==='>'?'&gt;':m); }
-    </script>
+                    </div>
+                `;
+            });
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+    }
+
+    async function checkUser() {
+        try {
+            const res = await fetch('/api/user');
+            if (res.ok) {
+                const user = await res.json();
+                document.getElementById('userWidget').innerHTML = `
+                    <div class="user-info">
+                        <img src="${user.photo || 'https://ui-avatars.com/api/?background=d4af37&color=0b0a09&name='+encodeURIComponent(user.name)}" class="user-avatar">
+                        <span>${user.name}</span>
+                        <a href="/logout" class="btn-outline" style="padding:4px 12px;">Вийти</a>
+                    </div>
+                `;
+            } else {
+                document.getElementById('userWidget').innerHTML = `<a href="/auth/google" class="btn"><i class="fab fa-google"></i> Увійти через Google</a>`;
+            }
+        } catch(e) { console.log(e); }
+    }
+    checkUser();
+</script>
 </body>
 </html>

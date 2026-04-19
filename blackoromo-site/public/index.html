@@ -4,121 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Black Oromo Coffee | Преміальна кава у Крижополі</title>
-    <meta name="description" content="Black Oromo Coffee – найкраща кава, затишок та смачна їжа у Крижополі. Щодня з 8:00 до 19:00.">
+    <meta name="description" content="Black Oromo Coffee – найкраща кава, затишок та смачна їжа у Крижополі. Бронювання столиків, онлайн-замовлення, акції та блог.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/style.css">
-    <style>
-        /* Унікальні стилі головної */
-        .hero {
-            position: relative;
-            background: radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.12) 0%, rgba(0,0,0,0) 70%);
-            border-radius: 0 0 60px 60px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-        .hero::before {
-            content: "☕";
-            font-size: 220px;
-            position: absolute;
-            bottom: -40px;
-            left: -40px;
-            opacity: 0.04;
-            pointer-events: none;
-            animation: slowSpin 50s infinite linear;
-        }
-        @keyframes slowSpin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .hero-content { position: relative; z-index: 2; }
-        .feature-icon {
-            font-size: 2.8rem;
-            background: linear-gradient(135deg, #d4af37, #f5e7d9);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            margin-bottom: 16px;
-            display: inline-block;
-        }
-        .info-card {
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            transition: all 0.3s;
-            backdrop-filter: blur(4px);
-        }
-        .info-card:hover {
-            transform: translateY(-8px);
-            border-color: #d4af37;
-            box-shadow: 0 20px 30px -15px rgba(212, 175, 55, 0.3);
-        }
-        .btn-menu-link, .btn-reviews-link {
-            background: linear-gradient(135deg, #d4af37, #b8902a);
-            border: none;
-            padding: 12px 32px;
-            border-radius: 60px;
-            font-weight: 600;
-            transition: 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            color: #0b0a09;
-            text-decoration: none;
-        }
-        .btn-menu-link:hover, .btn-reviews-link:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
-        }
-        .popular-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 28px;
-            margin: 40px 0;
-        }
-        .popular-item {
-            background: rgba(20, 18, 16, 0.7);
-            backdrop-filter: blur(8px);
-            border-radius: 32px;
-            padding: 24px;
-            text-align: center;
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            transition: 0.3s;
-        }
-        .popular-item:hover {
-            transform: translateY(-5px);
-            border-color: #d4af37;
-        }
-        .popular-item i {
-            font-size: 3rem;
-            color: #d4af37;
-            margin-bottom: 16px;
-        }
-        .popular-item h3 {
-            font-size: 1.4rem;
-            margin-bottom: 8px;
-        }
-        .cta-section {
-            background: rgba(212, 175, 55, 0.1);
-            border-radius: 48px;
-            padding: 48px 32px;
-            text-align: center;
-            margin: 50px 0;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-        }
-        .cta-section h3 {
-            font-size: 1.8rem;
-            font-family: 'Playfair Display', serif;
-        }
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2rem !important; }
-            .popular-grid { gap: 20px; }
-            .cta-section { padding: 32px 20px; }
-            .cta-section h3 { font-size: 1.4rem; }
-        }
-        @media (max-width: 480px) {
-            .hero h1 { font-size: 1.6rem !important; }
-            .btn-menu-link, .btn-reviews-link { padding: 10px 20px; font-size: 0.9rem; }
-        }
-    </style>
 </head>
 <body>
 
@@ -142,14 +31,19 @@
 
 <main>
     <div class="container">
+        <!-- Hero з анімацією -->
         <div class="hero fade-in" style="text-align: center; padding: 60px 20px 60px;">
             <div class="hero-content" style="max-width: 800px; margin: 0 auto;">
                 <h1 style="font-size: 3.8rem; font-weight: 800; margin-bottom: 20px;">Преміальна кава <br>у серці <span style="color:#d4af37;">Крижополя</span></h1>
                 <p style="margin: 0 auto 30px; font-size: 1.2rem; opacity: 0.9;">Затишок, який хочеться смакувати щодня</p>
-                <a href="/menu" class="btn-menu-link"><i class="fas fa-utensils"></i> Переглянути меню</a>
+                <div class="hero-buttons">
+                    <a href="/menu" class="btn-menu-link"><i class="fas fa-utensils"></i> Переглянути меню</a>
+                    <button id="scrollToBooking" class="btn-outline btn-book"><i class="fas fa-calendar-check"></i> Забронювати столик</button>
+                </div>
             </div>
         </div>
 
+        <!-- Інфо-картки з анімацією -->
         <div class="section scroll-animate" style="padding-top: 0;">
             <div class="info-grid">
                 <div class="info-card"><i class="fas fa-map-marker-alt feature-icon"></i><h3>Локація</h3><p>вул. Данила Нечая, 7<br>Крижопіль, 24600</p><p style="font-size:0.85rem; opacity:0.7;">(навпроти лікарні)</p></div>
@@ -158,32 +52,85 @@
             </div>
         </div>
 
-        <div class="scroll-animate" style="margin: 40px 0;">
-            <h2 class="section-title">Найпопулярніше</h2>
-            <div class="popular-grid">
-                <div class="popular-item"><i class="fas fa-mug-hot"></i><h3>Капучино</h3><p>Ніжна кава з італійським характером</p><span style="color:#d4af37; font-weight:700;">45 ₴</span></div>
-                <div class="popular-item"><i class="fas fa-hamburger"></i><h3>Цезар рол</h3><p>Сир, курка, свіжі овочі в лаваші</p><span style="color:#d4af37; font-weight:700;">89 ₴</span></div>
-                <div class="popular-item"><i class="fas fa-cocktail"></i><h3>Лимонад "Мохіто"</h3><p>Освіжаючий напій з м'ятою та лаймом</p><span style="color:#d4af37; font-weight:700;">55 ₴</span></div>
+        <!-- Статистика в цифрах (анімація лічильника) -->
+        <div class="stats-highlight scroll-animate">
+            <div class="stat-item"><i class="fas fa-mug-hot"></i><div class="stat-number" data-target="15842">0</div><span>чашок кави</span></div>
+            <div class="stat-item"><i class="fas fa-smile"></i><div class="stat-number" data-target="12450">0</div><span>щасливих гостей</span></div>
+            <div class="stat-item"><i class="fas fa-calendar-alt"></i><div class="stat-number" data-target="5">0</div><span>років роботи</span></div>
+            <div class="stat-item"><i class="fas fa-star"></i><div class="stat-number" data-target="4.9">0</div><span>середня оцінка</span></div>
+        </div>
+
+        <!-- Переваги закладу -->
+        <div class="advantages scroll-animate">
+            <h2 class="section-title">Чому обирають нас</h2>
+            <div class="advantages-grid">
+                <div class="advantage-card"><i class="fas fa-seedling"></i><h3>100% Арабіка</h3><p>Тільки свіжообсмажена кава преміум-класу</p></div>
+                <div class="advantage-card"><i class="fas fa-home"></i><h3>Затишна атмосфера</h3><p>Ідеальне місце для роботи чи відпочинку</p></div>
+                <div class="advantage-card"><i class="fas fa-wifi"></i><h3>Безкоштовний Wi-Fi</h3><p>Швидкісний інтернет для всіх гостей</p></div>
+                <div class="advantage-card"><i class="fas fa-parking"></i><h3>Зручна парковка</h3><p>Безкоштовні місця поруч із закладом</p></div>
             </div>
         </div>
 
+        <!-- Популярні позиції -->
+        <div class="scroll-animate" style="margin: 40px 0;">
+            <h2 class="section-title">Найпопулярніше</h2>
+            <div class="popular-grid">
+                <div class="popular-item"><i class="fas fa-mug-hot"></i><h3>Капучино</h3><p>Ніжна кава з італійським характером</p><span class="price">45 ₴</span><button class="order-btn" data-item="Капучино">Замовити</button></div>
+                <div class="popular-item"><i class="fas fa-hamburger"></i><h3>Цезар рол</h3><p>Сир, курка, свіжі овочі в лаваші</p><span class="price">89 ₴</span><button class="order-btn" data-item="Цезар рол">Замовити</button></div>
+                <div class="popular-item"><i class="fas fa-cocktail"></i><h3>Лимонад "Мохіто"</h3><p>Освіжаючий напій з м'ятою та лаймом</p><span class="price">55 ₴</span><button class="order-btn" data-item="Лимонад Мохіто">Замовити</button></div>
+            </div>
+        </div>
+
+        <!-- Меню (кнопка) -->
         <div class="section scroll-animate" style="text-align: center; padding: 30px 0;">
             <h2 class="section-title">Наше меню</h2>
             <p style="max-width: 600px; margin: 0 auto 2rem;">Справжні смаки, приготовані з любов'ю</p>
             <a href="/menu" class="btn-menu-link"><i class="fas fa-arrow-right"></i> Дослідити повне меню</a>
         </div>
 
+        <!-- Галерея фото -->
+        <div class="gallery scroll-animate">
+            <h2 class="section-title">Фотогалерея</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=400" alt="Кава"></div>
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400" alt="Інтер'єр"></div>
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400" alt="Десерт"></div>
+                <div class="gallery-item"><img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400" alt="Атмосфера"></div>
+            </div>
+        </div>
+
+        <!-- Відгуки -->
+        <div class="section scroll-animate">
+            <h2 class="section-title">Відгуки гостей</h2>
+            <div id="reviewsPreview" class="reviews-grid"></div>
+            <div style="text-align: center; margin-top: 40px;"><a href="/reviews" class="btn-reviews-link"><i class="fas fa-star"></i> Всі відгуки</a></div>
+        </div>
+
+        <!-- Форма бронювання столика -->
+        <div id="bookingSection" class="booking-form scroll-animate">
+            <h2 class="section-title">Забронювати столик</h2>
+            <form id="bookingForm">
+                <div class="form-row">
+                    <input type="text" id="bookingName" placeholder="Ваше ім'я" required>
+                    <input type="tel" id="bookingPhone" placeholder="Телефон" required>
+                </div>
+                <div class="form-row">
+                    <input type="date" id="bookingDate" required>
+                    <input type="time" id="bookingTime" required>
+                    <input type="number" id="bookingGuests" placeholder="Кількість гостей" min="1" max="20" required>
+                </div>
+                <textarea id="bookingMessage" placeholder="Особливі побажання (алергії, дитячий стільчик тощо)" rows="2"></textarea>
+                <button type="submit" class="btn-menu-link">Забронювати</button>
+                <div id="bookingStatus"></div>
+            </form>
+        </div>
+
+        <!-- CTA чат -->
         <div class="cta-section scroll-animate">
             <i class="fas fa-comment-dots" style="font-size: 3rem; color: #d4af37; margin-bottom: 16px; display: inline-block;"></i>
             <h3>Залишилися питання?</h3>
             <p style="margin: 16px 0;">Напишіть нам у чат – ми завжди на зв'язку!</p>
             <button id="openChatBtn" class="btn-menu-link" style="background: #d4af37; border: none;"><i class="fas fa-comment"></i> Відкрити чат</button>
-        </div>
-
-        <div class="section scroll-animate">
-            <h2 class="section-title">Відгуки</h2>
-            <div id="reviewsPreview" class="reviews-grid"></div>
-            <div style="text-align: center; margin-top: 40px;"><a href="/reviews" class="btn-reviews-link"><i class="fas fa-star"></i> Всі відгуки</a></div>
         </div>
     </div>
 </main>
@@ -202,6 +149,14 @@
                 <a href="/blog">Блог</a>
             </div>
             <div><a href="/admin/login" style="color:#d4af37; font-size:0.8rem;">Вхід для адміна</a></div>
+        </div>
+        <div class="social-footer">
+            <a href="https://www.instagram.com/blackoromocoffee" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.facebook.com/blackoromocoffee" target="_blank"><i class="fab fa-facebook"></i></a>
+            <a href="https://t.me/MARINA_85_CH" target="_blank"><i class="fab fa-telegram"></i></a>
+        </div>
+        <div style="text-align: center; margin-top: 24px; font-size: 0.75rem; opacity: 0.6;">
+            Version: <span id="siteVersion">BOS-1.7.24-R</span>
         </div>
         <p style="margin-top: 32px;">© 2026 Black Oromo Coffee. Ваша кава з любов'ю.</p>
     </div>
@@ -222,6 +177,7 @@
     });
     scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
+    // Відкриття чату
     document.getElementById('openChatBtn')?.addEventListener('click', () => {
         const chatToggle = document.getElementById('chatToggleBtn');
         if (chatToggle) chatToggle.click();
@@ -234,7 +190,80 @@
     if (now.getMonth() < openDate.getMonth() || (now.getMonth() === openDate.getMonth() && now.getDate() < openDate.getDate())) years--;
     document.getElementById('yearsCount').innerText = years;
 
-    // Перевірка статусу користувача
+    // Анімація лічильників
+    function animateNumbers() {
+        const statNumbers = document.querySelectorAll('.stat-number');
+        statNumbers.forEach(el => {
+            const target = parseInt(el.getAttribute('data-target'));
+            let current = 0;
+            const step = Math.ceil(target / 50);
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    el.innerText = target;
+                    clearInterval(timer);
+                } else {
+                    el.innerText = current;
+                }
+            }, 30);
+        });
+    }
+
+    // Анімація при скролі для статистики
+    const observerStats = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateNumbers();
+                observerStats.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+    const statsBlock = document.querySelector('.stats-highlight');
+    if (statsBlock) observerStats.observe(statsBlock);
+
+    // Скрол до бронювання
+    document.getElementById('scrollToBooking')?.addEventListener('click', () => {
+        document.getElementById('bookingSection').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // Відправка форми бронювання
+    document.getElementById('bookingForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = {
+            name: document.getElementById('bookingName').value,
+            phone: document.getElementById('bookingPhone').value,
+            date: document.getElementById('bookingDate').value,
+            time: document.getElementById('bookingTime').value,
+            guests: document.getElementById('bookingGuests').value,
+            message: document.getElementById('bookingMessage').value
+        };
+        const statusDiv = document.getElementById('bookingStatus');
+        statusDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Надсилання...';
+        try {
+            const res = await fetch('/api/booking', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (res.ok) {
+                statusDiv.innerHTML = '<span style="color:#2a8f6e;">✅ Дякуємо! Ми передзвонимо для підтвердження.</span>';
+                e.target.reset();
+            } else {
+                statusDiv.innerHTML = '<span style="color:#e6a177;">❌ Помилка. Спробуйте пізніше.</span>';
+            }
+        } catch(err) {
+            statusDiv.innerHTML = '<span style="color:#e6a177;">❌ Помилка мережі</span>';
+        }
+    });
+
+    // Замовлення (тимчасове сповіщення)
+    document.querySelectorAll('.order-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            alert('Функція замовлення незабаром з\'явиться!');
+        });
+    });
+
+    // Перевірка користувача
     async function checkUser() {
         try {
             const res = await fetch('/api/user');
@@ -254,7 +283,7 @@
     }
     checkUser();
 
-    // Анімація при скролі
+    // Анімація при скролі (загальна)
     const animatedElements = document.querySelectorAll('.scroll-animate');
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {

@@ -2,24 +2,207 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Про нас | Black Oromo Coffee</title>
+    <meta name="description" content="Історія, команда, особливості та досягнення Black Oromo Coffee – кав'ярні в Крижополі, де народжується справжня кава.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/style.css">
     <style>
-        .about-hero { text-align: center; margin-bottom: 2rem; }
-        .feature-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin: 3rem 0; }
-        .feature-item { background: rgba(20,18,16,0.7); backdrop-filter: blur(8px); border-radius: 32px; padding: 1.5rem; text-align: center; transition: 0.3s; }
-        .feature-item i { font-size: 2.2rem; color: var(--gold); margin-bottom: 1rem; }
-        .social-links { display: flex; justify-content: center; gap: 1.5rem; margin: 1.5rem 0; }
-        .social-links a { color: var(--gold); font-size: 1.8rem; transition: 0.2s; }
-        .social-links a:hover { transform: translateY(-3px); color: var(--gold-dark); }
-        .contact-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; margin: 2rem 0; }
-        .contact-card { background: rgba(20,18,16,0.6); border-radius: 28px; padding: 1rem 1.8rem; text-align: center; min-width: 200px; }
-        .map-container { border-radius: 32px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin-top: 2rem; }
-        .btn-menu-link { background: var(--gold); color: #0b0a09; padding: 12px 28px; border-radius: 60px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; margin-top: 1rem; }
-        .btn-menu-link:hover { background: var(--gold-dark); transform: translateY(-2px); }
+        /* Додаткові стилі для сторінки "Про нас" */
+        .about-hero {
+            text-align: center;
+            padding: 60px 20px 40px;
+            background: radial-gradient(circle at 20% 30%, rgba(212,175,55,0.1) 0%, transparent 80%);
+            border-radius: 0 0 60px 60px;
+            margin-bottom: 20px;
+        }
+        .about-hero h1 {
+            font-size: 3rem;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 20px;
+        }
+        .about-hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin: 50px 0 40px;
+        }
+        .stat-item {
+            text-align: center;
+            background: rgba(20,18,16,0.5);
+            backdrop-filter: blur(4px);
+            padding: 20px 30px;
+            border-radius: 60px;
+            min-width: 160px;
+        }
+        .stat-item .number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--gold);
+            display: block;
+        }
+        .stat-item .label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        .mission-block {
+            background: rgba(212,175,55,0.05);
+            border-radius: 48px;
+            padding: 40px;
+            margin: 40px 0;
+            text-align: center;
+            border: 1px solid rgba(212,175,55,0.2);
+        }
+        .mission-block h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        .mission-block p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin: 50px 0;
+        }
+        .feature-item {
+            flex: 0 0 280px;
+            background: rgba(20,18,16,0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 32px;
+            padding: 28px 20px;
+            text-align: center;
+            transition: 0.3s;
+            border: 1px solid rgba(212,175,55,0.2);
+        }
+        .feature-item:hover {
+            transform: translateY(-8px);
+            border-color: var(--gold);
+            background: rgba(30,26,22,0.9);
+        }
+        .feature-item i {
+            font-size: 2.5rem;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+        .team-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin: 50px 0;
+        }
+        .team-card {
+            flex: 0 0 220px;
+            text-align: center;
+            background: rgba(20,18,16,0.5);
+            border-radius: 32px;
+            padding: 20px;
+            transition: 0.3s;
+        }
+        .team-card:hover {
+            transform: translateY(-5px);
+        }
+        .team-card img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--gold);
+            margin-bottom: 15px;
+        }
+        .team-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        .team-card p {
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+        .contacts-section {
+            background: rgba(20,18,16,0.4);
+            border-radius: 48px;
+            padding: 40px;
+            margin: 50px 0;
+        }
+        .contact-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .contact-card {
+            background: rgba(20,18,16,0.6);
+            border-radius: 28px;
+            padding: 20px;
+            text-align: center;
+            flex: 0 0 220px;
+        }
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 30px 0;
+        }
+        .social-links a {
+            color: var(--gold);
+            font-size: 2rem;
+            transition: 0.2s;
+        }
+        .social-links a:hover {
+            transform: translateY(-3px);
+            color: var(--gold-dark);
+        }
+        .map-container {
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin-top: 30px;
+        }
+        .btn-menu-link {
+            background: linear-gradient(135deg, #d4af37, #b8902a);
+            color: #0b0a09;
+            padding: 12px 28px;
+            border-radius: 60px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+        }
+        .btn-menu-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212,175,55,0.3);
+        }
+        @media (max-width: 768px) {
+            .about-hero h1 { font-size: 2rem; }
+            .stats-row { gap: 20px; }
+            .stat-item { padding: 12px 20px; min-width: 120px; }
+            .stat-item .number { font-size: 1.8rem; }
+            .mission-block { padding: 30px 20px; }
+            .feature-item { flex: 0 0 100%; max-width: 320px; }
+            .team-card { flex: 0 0 160px; }
+            .team-card img { width: 90px; height: 90px; }
+        }
+        @media (max-width: 480px) {
+            .team-grid { gap: 20px; }
+            .team-card { flex: 0 0 140px; }
+        }
     </style>
 </head>
 <body>
@@ -43,16 +226,35 @@
 </header>
 
 <main>
-    <div class="container" style="padding: 40px 0 60px;">
-        <!-- весь ваш існуючий вміст сторінки "Про нас" без змін -->
-        <div class="about-hero scroll-animate">
-            <h2 class="section-title">Про нас</h2>
-            <p style="max-width: 800px; margin: 0 auto; font-size: 1.1rem;">Black Oromo Coffee – це більше, ніж просто кав'ярня. Це місце, де народжується настрій.</p>
+    <div class="container">
+        <!-- Hero -->
+        <div class="about-hero fade-in">
+            <h1>Про Black Oromo Coffee</h1>
+            <p>Місце, де народжується настрій та справжня любов до кави</p>
         </div>
-        <div class="scroll-animate" style="text-align: center; max-width: 800px; margin: 0 auto 3rem;">
-            <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">Наша історія</h3>
-            <p>Ми відчинили двері 13 січня 2023 року на вулиці Данила Нечая, 7. За цей час ми стали місцем, де зустрічаються друзі, народжуються ідеї та народжується справжня любов до кави. Кожна чашка готується з душею, кожен десерт – за власними рецептами.</p>
+
+        <!-- Статистика (динамічні лічильники) -->
+        <div class="stats-row scroll-animate">
+            <div class="stat-item"><span class="number" data-target="2023">0</span><span class="label">рік заснування</span></div>
+            <div class="stat-item"><span class="number" data-target="12450">0</span><span class="label">щасливих гостей</span></div>
+            <div class="stat-item"><span class="number" data-target="15842">0</span><span class="label">чашок кави</span></div>
+            <div class="stat-item"><span class="number" data-target="5">0</span><span class="label">років досвіду</span></div>
         </div>
+
+        <!-- Історія + місія -->
+        <div class="scroll-animate">
+            <div class="mission-block">
+                <h2>Наша місія</h2>
+                <p>Дарувати справжню каву, тепло та затишок кожному гостю. Ми віримо, що кава – це більше, ніж напій. Це ритуал, який об'єднує людей, надихає на нові звершення та створює настрій.</p>
+            </div>
+            <div style="text-align: center; max-width: 800px; margin: 0 auto 40px;">
+                <h3 style="font-size: 1.8rem; margin-bottom: 1rem; font-family: 'Playfair Display';">Наша історія</h3>
+                <p>Ми відчинили двері 13 січня 2023 року на вулиці Данила Нечая, 7. За цей час ми стали місцем, де зустрічаються друзі, народжуються ідеї та народжується справжня любов до кави. Кожна чашка готується з душею, кожен десерт – за власними рецептами. Ми постійно розвиваємось, вдосконалюємо рецептури та розширюємо меню, щоб радувати вас новими смаками.</p>
+            </div>
+        </div>
+
+        <!-- Особливості закладу -->
+        <h2 class="section-title scroll-animate">Наші переваги</h2>
         <div class="feature-list scroll-animate">
             <div class="feature-item"><i class="fas fa-tree"></i><h3>Літня тераса</h3><p>Затишний куточок на свіжому повітрі</p></div>
             <div class="feature-item"><i class="fas fa-snowplow"></i><h3>Зимова тераса</h3><p>Тепла і затишна, з видом на вулицю</p></div>
@@ -61,19 +263,33 @@
             <div class="feature-item"><i class="fas fa-hamburger"></i><h3>Фастфуд і не тільки</h3><p>Бургери, снеки, свіжа випічка</p></div>
             <div class="feature-item"><i class="fas fa-seedling"></i><h3>Свіжа кава</h3><p>Тільки зернова, преміальна</p></div>
         </div>
-        <div style="text-align: center;">
+
+        <!-- Команда -->
+        <h2 class="section-title scroll-animate">Наша команда</h2>
+        <div class="team-grid scroll-animate">
+            <div class="team-card"><img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Бариста"><h4>Марія</h4><p>Головний бариста</p></div>
+            <div class="team-card"><img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Шеф"><h4>Олександр</h4><p>Шеф-кухар</p></div>
+            <div class="team-card"><img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Менеджер"><h4>Анна</h4><p>Керуюча</p></div>
+            <div class="team-card"><img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Бариста"><h4>Дмитро</h4><p>Бариста</p></div>
+        </div>
+
+        <!-- Меню кнопка -->
+        <div style="text-align: center; margin: 40px 0;">
             <a href="/menu" class="btn-menu-link"><i class="fas fa-utensils"></i> Переглянути повне меню</a>
         </div>
-        <div class="scroll-animate" style="margin: 3rem 0;">
+
+        <!-- Контакти та соцмережі -->
+        <div class="contacts-section scroll-animate">
             <h2 class="section-title">Контакти та зв'язок</h2>
             <div class="contact-grid">
-                <div class="contact-card"><i class="fas fa-phone-alt"></i><p><strong>Телефон</strong><br><a href="tel:+380683665540">+380 (68) 366 5540</a></p></div>
-                <div class="contact-card"><i class="fas fa-envelope"></i><p><strong>Email</strong><br><a href="mailto:blackoromo.site.suport@gmail.com">blackoromo.site.suport@gmail.com</a></p></div>
-                <div class="contact-card"><i class="fas fa-map-marker-alt"></i><p><strong>Адреса</strong><br>вул. Данила Нечая, 7, Крижопіль</p></div>
+                <div class="contact-card"><i class="fas fa-phone-alt"></i><strong>Телефон</strong><p><a href="tel:+380683665540" style="color: var(--gold);">+380 (68) 366 5540</a></p></div>
+                <div class="contact-card"><i class="fas fa-envelope"></i><strong>Email</strong><p><a href="mailto:blackoromo.site.suport@gmail.com" style="color: var(--gold);">blackoromo.site.suport@gmail.com</a></p></div>
+                <div class="contact-card"><i class="fas fa-map-marker-alt"></i><strong>Адреса</strong><p>вул. Данила Нечая, 7, Крижопіль</p></div>
             </div>
             <div class="social-links">
                 <a href="https://www.instagram.com/blackoromocoffee" target="_blank"><i class="fab fa-instagram"></i></a>
                 <a href="https://www.facebook.com/profile.php?id=61577008466314" target="_blank"><i class="fab fa-facebook"></i></a>
+                <a href="https://t.me/MARINA_85_CH" target="_blank"><i class="fab fa-telegram"></i></a>
             </div>
             <div class="map-container">
                 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2622.3456!2d28.123456!3d48.123456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDjCsDA3JzI0LjQiTiAyOMKwMDcnMzEuMiJF!5e0!3m2!1suk!2sua!4v1234567890123!5m2!1suk!2sua" width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
@@ -97,13 +313,69 @@
             </div>
             <div><a href="/admin/login" style="color:#d4af37; font-size:0.8rem;">Вхід для адміна</a></div>
         </div>
-        <p style="margin-top: 32px;">© 2026 Black Oromo Coffee</p>
+        <div style="text-align: center; margin-top: 24px; font-size: 0.75rem; opacity: 0.6;">
+            Version: BOS-1.7.24-R
+        </div>
+        <p style="margin-top: 16px;">© 2026 Black Oromo Coffee. Ваша кава з любов'ю.</p>
     </div>
 </footer>
+
+<div id="scrollToTopBtn" class="scroll-to-top">
+    <i class="fas fa-arrow-up"></i>
+</div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/chat-sidebar.js"></script>
 <script>
+    // Кнопка "Вгору"
+    const scrollBtn = document.getElementById('scrollToTopBtn');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) scrollBtn.classList.add('visible');
+        else scrollBtn.classList.remove('visible');
+    });
+    scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // Анімація лічильників
+    function animateNumbers() {
+        const statNumbers = document.querySelectorAll('.stat-item .number');
+        statNumbers.forEach(el => {
+            const target = parseInt(el.getAttribute('data-target'));
+            let current = 0;
+            const step = Math.ceil(target / 50);
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    el.innerText = target;
+                    clearInterval(timer);
+                } else {
+                    el.innerText = current;
+                }
+            }, 30);
+        });
+    }
+
+    // Запуск анімації при потраплянні блока статистики у видиму область
+    const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateNumbers();
+                statsObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+    const statsRow = document.querySelector('.stats-row');
+    if (statsRow) statsObserver.observe(statsRow);
+
+    // Загальна анімація появи при скролі
+    const animatedElements = document.querySelectorAll('.scroll-animate');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+    }, { threshold: 0.15 });
+    animatedElements.forEach(el => observer.observe(el));
+
+    // Перевірка користувача
     async function checkUser() {
         try {
             const res = await fetch('/api/user');
@@ -122,11 +394,6 @@
         } catch(e) { console.log(e); }
     }
     checkUser();
-    const animated = document.querySelectorAll('.scroll-animate');
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-    }, { threshold: 0.2 });
-    animated.forEach(el => observer.observe(el));
 </script>
 </body>
 </html>

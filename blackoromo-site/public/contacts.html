@@ -3,33 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Контакти | Black Oromo Coffee</title>
-    <meta name="description" content="Зв'яжіться з нами: телефон, email, Telegram, форма зворотного зв'язку. Адреса, графік роботи та схема проїзду.">
+    <title>Контакти та інформація | Black Oromo Coffee</title>
+    <meta name="description" content="Як нас знайти, графік роботи, телефон, email, Telegram, форма зворотного зв'язку. Детальна інформація про кав'ярню Black Oromo Coffee у Крижополі.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/style.css">
     <style>
-        .contacts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin: 2rem 0; }
-        .contact-info-card { background: rgba(20,18,16,0.7); backdrop-filter: blur(8px); border-radius: 32px; padding: 1.8rem; text-align: center; border: 1px solid rgba(212,175,55,0.2); transition: 0.3s; }
-        .contact-info-card:hover { transform: translateY(-5px); border-color: var(--gold); }
-        .contact-info-card i { font-size: 2.5rem; color: var(--gold); margin-bottom: 1rem; }
-        .contact-info-card a { color: var(--text-light); text-decoration: none; word-break: break-word; }
-        .contact-info-card a:hover { color: var(--gold); }
-        .schedule-card { background: rgba(20,18,16,0.6); backdrop-filter: blur(8px); border-radius: 32px; padding: 1.5rem; text-align: center; border: 1px solid rgba(212,175,55,0.2); }
-        .schedule-card h3 { font-size: 1.5rem; margin-bottom: 1rem; }
-        .schedule-item { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px dashed rgba(212,175,55,0.3); }
-        .direction-block { background: rgba(20,18,16,0.5); border-radius: 32px; padding: 1.8rem; margin: 2rem 0; border-left: 4px solid var(--gold); }
-        .contact-form { background: rgba(20,18,16,0.7); backdrop-filter: blur(8px); border-radius: 32px; padding: 2rem; margin: 2rem 0; border: 1px solid rgba(212,175,55,0.3); }
-        .contact-form input, .contact-form textarea { width: 100%; background: #2a241f; border: 1px solid rgba(212,175,55,0.3); border-radius: 60px; padding: 14px 20px; color: white; margin-bottom: 1rem; font-size: 1rem; }
-        .contact-form textarea { border-radius: 28px; resize: vertical; }
-        .contact-form button { background: linear-gradient(135deg, #d4af37, #b8902a); border: none; padding: 12px 28px; border-radius: 60px; font-weight: 600; cursor: pointer; width: 100%; transition: 0.2s; }
-        .contact-form button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(212,175,55,0.3); }
-        .map-row { display: flex; gap: 1.5rem; flex-wrap: wrap; margin: 2rem 0; }
-        .map-container { flex: 2; min-width: 250px; border-radius: 32px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .route-links { flex: 1; background: rgba(20,18,16,0.5); border-radius: 32px; padding: 1.5rem; text-align: center; }
-        .route-links a { display: inline-flex; align-items: center; gap: 8px; background: var(--gold); color: #0b0a09; padding: 10px 20px; border-radius: 60px; text-decoration: none; font-weight: 600; margin: 0.5rem; transition: 0.2s; }
-        .route-links a:hover { transform: translateY(-2px); background: var(--gold-dark); }
-        @media (max-width: 768px) { .schedule-item { flex-direction: column; align-items: center; gap: 5px; } .map-row { flex-direction: column; } }
+        /* Додаткові стилі для сторінки контактів */
+        .contacts-hero {
+            text-align: center;
+            padding: 40px 20px 20px;
+            background: radial-gradient(circle at 20% 30%, rgba(212,175,55,0.08) 0%, transparent 70%);
+            border-radius: 0 0 60px 60px;
+            margin-bottom: 20px;
+        }
+        .contacts-hero h1 {
+            font-size: 2.8rem;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 12px;
+        }
+        .contacts-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+        }
+        .contact-card {
+            flex: 0 0 260px;
+            background: rgba(20,18,16,0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 32px;
+            padding: 28px 20px;
+            text-align: center;
+            border: 1px solid rgba(212,175,55,0.2);
+            transition: 0.3s;
+        }
+        .contact-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--gold);
+        }
+        .contact-card i {
+            font-size: 2.5rem;
+            color: var(--gold);
+            margin-bottom: 16px;
+        }
+        .contact-card h3 {
+            margin-bottom: 12px;
+        }
+        .contact-card a {
+            color: var(--text-light);
+            text-decoration: none;
+            word-break: break-word;
+        }
+        .contact-card a:hover {
+            color: var(--gold);
+        }
+        .schedule-card {
+            background: rgba(20,18,16,0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 32px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(212,175,55,0.2);
+            margin: 40px 0;
+        }
+        .schedule-grid {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .schedule-day {
+            text-align: left;
+            min-width: 200px;
+        }
+        .schedule-day p {
+            padding: 8px 0;
+            border-bottom: 1px dashed rgba(212,175,55,0.3);
+        }
+        .direction-block {
+            background: rgba(20,18,16,0.5);
+            border-radius: 32px;
+            padding: 30px;
+            margin: 40px 0;
+            border-left: 4px solid var(--gold);
+        }
+        .direction-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .direction-detail {
+            flex: 1;
+            background: rgba(0,0,0,0.2);
+            border-radius: 24px;
+            padding: 15px;
+        }
+        .contact-form {
+            background: rgba(20,18,16,0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 48px;
+            padding: 2.5rem;
+            margin: 40px 0;
+            border: 1px solid rgba(212,175,55,0.3);
+        }
+        .form-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .contact-form input, .contact-form textarea {
+            flex: 1;
+            background: #2a241f;
+            border: 1px solid rgba(212,175,55,0.3);
+            border-radius: 60px;
+            padding: 14px 20px;
+            color: white;
+            font-size: 1rem;
+        }
+        .contact-form textarea {
+            border-radius: 28px;
+            resize: vertical;
+        }
+        .contact-form button {
+            background: linear-gradient(135deg, #d4af37, #b8902a);
+            border: none;
+            padding: 14px 28px;
+            border-radius: 60px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
+        }
+        .contact-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212,175,55,0.3);
+        }
+        .map-row {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 40px 0;
+        }
+        .map-container {
+            flex: 2;
+            min-width: 280px;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .route-links {
+            flex: 1;
+            background: rgba(20,18,16,0.5);
+            border-radius: 32px;
+            padding: 1.5rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 15px;
+        }
+        .route-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: var(--gold);
+            color: #0b0a09;
+            padding: 12px 20px;
+            border-radius: 60px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .route-links a:hover {
+            transform: translateY(-2px);
+            background: var(--gold-dark);
+        }
+        .booking-note {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .booking-note p {
+            background: rgba(212,175,55,0.1);
+            border-radius: 40px;
+            padding: 12px 24px;
+            display: inline-block;
+        }
+        @media (max-width: 768px) {
+            .contacts-hero h1 { font-size: 2rem; }
+            .contact-card { flex: 0 0 100%; max-width: 320px; }
+            .schedule-grid { flex-direction: column; align-items: center; gap: 10px; }
+            .schedule-day { text-align: center; }
+            .form-row { flex-direction: column; gap: 12px; }
+            .direction-details { flex-direction: column; }
+        }
     </style>
 </head>
 <body>
@@ -53,58 +225,43 @@
 </header>
 
 <main>
-    <div class="container" style="padding: 40px 0 60px;">
-        <div class="scroll-animate" style="text-align: center; margin-bottom: 2rem;">
-            <h2 class="section-title">Контакти</h2>
-            <p style="max-width: 700px; margin: 0 auto;">Ми завжди на зв'язку! Оберіть зручний спосіб.</p>
+    <div class="container">
+        <!-- Hero -->
+        <div class="contacts-hero fade-in">
+            <h1>Зв'язок та інформація</h1>
+            <p>Ми завжди на зв'язку. Оберіть зручний спосіб або завітайте до нас особисто!</p>
         </div>
 
+        <!-- Контактні картки -->
         <div class="contacts-grid scroll-animate">
-            <div class="contact-info-card">
-                <i class="fas fa-phone-alt"></i>
-                <h3>Телефон</h3>
-                <a href="tel:+380683665540">+380 (68) 366 5540</a>
-                <p style="margin-top: 8px; font-size: 0.85rem;">(дзвінки, Viber, WhatsApp)</p>
-            </div>
-            <div class="contact-info-card">
-                <i class="fab fa-telegram-plane"></i>
-                <h3>Telegram</h3>
-                <a href="https://t.me/MARINA_85_CH" target="_blank">@MARINA_85_CH</a>
-                <p style="margin-top: 8px; font-size: 0.85rem;">Напишіть нам у Telegram</p>
-            </div>
-            <div class="contact-info-card">
-                <i class="fas fa-envelope"></i>
-                <h3>Email</h3>
-                <a href="mailto:blackoromo.site.suport@gmail.com">blackoromo.site.suport@gmail.com</a>
-            </div>
+            <div class="contact-card"><i class="fas fa-phone-alt"></i><h3>Телефон</h3><a href="tel:+380683665540">+380 (68) 366 5540</a><p style="margin-top:8px; font-size:0.8rem;">Viber, WhatsApp, дзвінки</p></div>
+            <div class="contact-card"><i class="fab fa-telegram-plane"></i><h3>Telegram</h3><a href="https://t.me/MARINA_85_CH" target="_blank">@MARINA_85_CH</a><p style="margin-top:8px; font-size:0.8rem;">Швидкий чат</p></div>
+            <div class="contact-card"><i class="fas fa-envelope"></i><h3>Email</h3><a href="mailto:blackoromo.site.suport@gmail.com">blackoromo.site.suport@gmail.com</a><p style="margin-top:8px; font-size:0.8rem;">Відповідаємо протягом доби</p></div>
+            <div class="contact-card"><i class="fab fa-instagram"></i><h3>Instagram</h3><a href="https://www.instagram.com/blackoromocoffee" target="_blank">@blackoromocoffee</a><p style="margin-top:8px; font-size:0.8rem;">Свіжі фото та новини</p></div>
         </div>
 
+        <!-- Графік роботи -->
         <div class="schedule-card scroll-animate">
             <h3><i class="far fa-clock"></i> Графік роботи</h3>
-            <div class="schedule-item"><span>Понеділок – Субота</span><span>08:00 – 19:00</span></div>
-            <div class="schedule-item"><span>Неділя</span><span>08:00 – 18:00</span></div>
-            <div class="schedule-item"><span>Святкові дні</span><span>Скорочений день або вихідний</span></div>
-            <p style="margin-top: 12px; font-size: 0.8rem;">* Про зміни в роботі повідомляємо в соцмережах</p>
+            <div class="schedule-grid">
+                <div class="schedule-day"><strong>Понеділок – Субота</strong><p>08:00 – 19:00</p></div>
+                <div class="schedule-day"><strong>Неділя</strong><p>09:00 – 18:00</p></div>
+                <div class="schedule-day"><strong>Святкові дні</strong><p>Скорочений день або вихідний</p></div>
+            </div>
+            <p style="margin-top: 16px; font-size: 0.8rem;">* Про зміни в роботі повідомляємо в соцмережах</p>
         </div>
 
-        <div class="contact-form scroll-animate" id="contactFormBlock">
-            <h3 style="text-align: center; margin-bottom: 1.5rem;"><i class="fas fa-paper-plane"></i> Написати нам</h3>
-            <form id="feedbackForm">
-                <input type="text" id="feedbackName" placeholder="Ваше ім'я" required>
-                <input type="email" id="feedbackEmail" placeholder="Ваш email" required>
-                <textarea id="feedbackMessage" rows="4" placeholder="Повідомлення..." required></textarea>
-                <button type="submit">Надіслати <i class="fas fa-arrow-right"></i></button>
-                <div id="formStatus" style="margin-top: 1rem; text-align: center; font-size: 0.9rem;"></div>
-            </form>
-        </div>
-
+        <!-- Як нас знайти -->
         <div class="direction-block scroll-animate">
             <h3><i class="fas fa-location-dot"></i> Як нас знайти?</h3>
-            <p><strong>📍 Адреса:</strong> вул. Данила Нечая, 7, Крижопіль (навпроти поліклініки)</p>
-            <p><strong>🚗 Орієнтири:</strong> Велика двоповерхова будівля з вивіскою <strong>Black Oromo Coffee</strong>. Неподалік знаходиться магазин <strong>«Наша ряба»</strong> (навпроти справа). Вхід – <strong>ліві двері</strong> (не центральні).</p>
-            <p><strong>🅿️ Парковка:</strong> Поруч є безкоштовні місця для авто.</p>
+            <div class="direction-details">
+                <div class="direction-detail"><i class="fas fa-map-pin"></i> <strong>📍 Адреса</strong><br>вул. Данила Нечая, 7, Крижопіль (навпроти поліклініки)</div>
+                <div class="direction-detail"><i class="fas fa-building"></i> <strong>🏢 Орієнтири</strong><br>Велика двоповерхова будівля з вивіскою <strong>Black Oromo Coffee</strong>. Неподалік магазин «Наша ряба» (навпроти справа). <strong>Вхід – ліві двері</strong> (не центральні).</div>
+                <div class="direction-detail"><i class="fas fa-parking"></i> <strong>🅿️ Парковка</strong><br>Безкоштовні місця поруч із закладом.</div>
+            </div>
         </div>
 
+        <!-- Карта та маршрут -->
         <div class="map-row scroll-animate">
             <div class="map-container">
                 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2622.3456!2d28.123456!3d48.123456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDjCsDA3JzI0LjQiTiAyOMKwMDcnMzEuMiJF!5e0!3m2!1suk!2sua!4v1234567890123!5m2!1suk!2sua" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" title="Google Maps"></iframe>
@@ -116,10 +273,23 @@
             </div>
         </div>
 
-        <div class="scroll-animate" style="text-align: center; margin-top: 2rem;">
-            <p style="background: rgba(212,175,55,0.1); border-radius: 40px; padding: 12px; display: inline-block;">
-                <i class="fas fa-calendar-check"></i> Бажаєте забронювати столик? Зателефонуйте або напишіть у чат!
-            </p>
+        <!-- Форма зворотного зв'язку -->
+        <div class="contact-form scroll-animate">
+            <h3 style="text-align: center; margin-bottom: 1.5rem;"><i class="fas fa-paper-plane"></i> Написати нам</h3>
+            <form id="feedbackForm">
+                <div class="form-row">
+                    <input type="text" id="feedbackName" placeholder="Ваше ім'я" required>
+                    <input type="email" id="feedbackEmail" placeholder="Ваш email" required>
+                </div>
+                <textarea id="feedbackMessage" rows="4" placeholder="Повідомлення..." required></textarea>
+                <button type="submit">Надіслати <i class="fas fa-arrow-right"></i></button>
+                <div id="formStatus" style="margin-top: 1rem; text-align: center; font-size: 0.9rem;"></div>
+            </form>
+        </div>
+
+        <!-- Бронювання столиків -->
+        <div class="booking-note scroll-animate">
+            <p><i class="fas fa-calendar-check"></i> Бажаєте забронювати столик? Зателефонуйте або напишіть у чат!</p>
         </div>
     </div>
 </main>
@@ -139,13 +309,29 @@
             </div>
             <div><a href="/admin/login" style="color:#d4af37; font-size:0.8rem;">Вхід для адміна</a></div>
         </div>
-        <p style="margin-top: 32px;">© 2026 Black Oromo Coffee. Ваша кава з любов'ю.</p>
+        <div style="text-align: center; margin-top: 24px; font-size: 0.75rem; opacity: 0.6;">
+            Version: BOS-1.7.24-R
+        </div>
+        <p style="margin-top: 16px;">© 2026 Black Oromo Coffee. Ваша кава з любов'ю.</p>
     </div>
 </footer>
+
+<div id="scrollToTopBtn" class="scroll-to-top">
+    <i class="fas fa-arrow-up"></i>
+</div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/chat-sidebar.js"></script>
 <script>
+    // Кнопка "Вгору"
+    const scrollBtn = document.getElementById('scrollToTopBtn');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) scrollBtn.classList.add('visible');
+        else scrollBtn.classList.remove('visible');
+    });
+    scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // Форма зворотного зв'язку
     const form = document.getElementById('feedbackForm');
     const statusDiv = document.getElementById('formStatus');
     form.addEventListener('submit', async (e) => {
@@ -176,6 +362,7 @@
         }
     });
 
+    // Перевірка користувача
     async function checkUser() {
         try {
             const res = await fetch('/api/user');
@@ -195,6 +382,7 @@
     }
     checkUser();
 
+    // Анімація скролу
     const animated = document.querySelectorAll('.scroll-animate');
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });

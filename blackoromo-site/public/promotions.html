@@ -2,92 +2,288 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Акції | Black Oromo Coffee</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Акції та події | Black Oromo Coffee</title>
+    <meta name="description" content="Актуальні акції, знижки та спеціальні пропозиції в кав'ярні Black Oromo Coffee. Слідкуйте за оновленнями та економте з нами!">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/style.css">
     <style>
-        .promotions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; margin: 3rem 0; }
-        .promo-card { background: rgba(20,18,16,0.7); backdrop-filter: blur(8px); border-radius: 32px; overflow: hidden; transition: 0.3s; border: 1px solid rgba(212,175,55,0.2); }
-        .promo-card:hover { transform: translateY(-5px); border-color: var(--gold); }
-        .promo-card img { width: 100%; height: 200px; object-fit: cover; background: #2a241f; }
-        .promo-card-content { padding: 1.5rem; }
-        .promo-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--gold); }
-        .promo-date { font-size: 0.8rem; opacity: 0.7; margin-bottom: 1rem; }
-        .promo-desc { color: var(--text-muted); line-height: 1.5; }
-        .empty-state { text-align: center; padding: 60px 20px; background: rgba(20,18,16,0.5); border-radius: 48px; }
+        /* Додаткові стилі для сторінки акцій */
+        .promotions-hero {
+            text-align: center;
+            padding: 50px 20px 30px;
+            background: radial-gradient(circle at 20% 30%, rgba(212,175,55,0.12) 0%, transparent 80%);
+            border-radius: 0 0 60px 60px;
+            margin-bottom: 20px;
+        }
+        .promotions-hero h1 {
+            font-size: 2.8rem;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 15px;
+        }
+        .promotions-hero p {
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        .promo-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 40px 0 20px;
+        }
+        .stat-badge {
+            background: rgba(20,18,16,0.6);
+            backdrop-filter: blur(4px);
+            border-radius: 60px;
+            padding: 10px 24px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .stat-badge i {
+            font-size: 1.5rem;
+            color: var(--gold);
+        }
+        .stat-badge .value {
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: var(--gold);
+            margin-right: 5px;
+        }
+        .promotions-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin: 50px 0;
+        }
+        .promo-card {
+            flex: 0 0 320px;
+            background: rgba(20,18,16,0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 32px;
+            overflow: hidden;
+            transition: 0.3s;
+            border: 1px solid rgba(212,175,55,0.2);
+            display: flex;
+            flex-direction: column;
+        }
+        .promo-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--gold);
+            box-shadow: 0 20px 30px -15px rgba(212,175,55,0.3);
+        }
+        .promo-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #2a241f;
+            transition: 0.3s;
+        }
+        .promo-card:hover img {
+            transform: scale(1.02);
+        }
+        .promo-card-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .promo-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--gold);
+        }
+        .promo-date {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .promo-date i {
+            color: var(--gold);
+        }
+        .promo-desc {
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+        .promo-tag {
+            display: inline-block;
+            background: rgba(212,175,55,0.2);
+            border-radius: 40px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            align-self: flex-start;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(20,18,16,0.5);
+            border-radius: 48px;
+            width: 100%;
+        }
+        .spinner {
+            display: flex;
+            justify-content: center;
+            padding: 60px;
+        }
+        @media (max-width: 768px) {
+            .promotions-hero h1 { font-size: 2rem; }
+            .promo-card { flex: 0 0 100%; max-width: 350px; }
+            .stat-badge { padding: 6px 16px; }
+            .stat-badge .value { font-size: 1.2rem; }
+        }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="navbar">
-                <div class="logo">Black <span>Oromo</span> Coffee</div>
-                <div class="nav-links">
-                    <a href="/">Головна</a>
-                    <a href="/menu">Меню</a>
-                    <a href="/reviews">Відгуки</a>
-                    <a href="/about">Про нас</a>
-                    <a href="/contacts">Контакти</a>
-                    <a href="/promotions">Акції</a>
-                    <a href="/blog">Блог</a>
-                    <div id="userWidget"></div>
-                </div>
+
+<header>
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">Black <span>Oromo</span> Coffee</div>
+            <div class="nav-links">
+                <a href="/">Головна</a>
+                <a href="/menu">Меню</a>
+                <a href="/reviews">Відгуки</a>
+                <a href="/about">Про нас</a>
+                <a href="/contacts">Контакти</a>
+                <a href="/promotions">Акції</a>
+                <a href="/blog">Блог</a>
+                <div id="userWidget"></div>
             </div>
         </div>
-    </header>
-    <main>
-        <div class="container" style="padding: 40px 0 60px;">
-            <h2 class="section-title">Акції та події</h2>
-            <div id="promotionsList" class="promotions-grid"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i> Завантаження...</div></div>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+        <!-- Hero -->
+        <div class="promotions-hero fade-in">
+            <h1>Акції та події</h1>
+            <p>Спеціальні пропозиції, знижки та святкові події. Слідкуйте за оновленнями — вигода чекає на вас!</p>
         </div>
-    </main>
-    <footer>
-        <div class="container">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
-                <div class="logo" style="font-size: 1.4rem;">Black <span>Oromo</span> Coffee</div>
-                <div class="footer-links">
-                    <a href="/">Головна</a> &nbsp;|&nbsp;
-                    <a href="/menu">Меню</a> &nbsp;|&nbsp;
-                    <a href="/reviews">Відгуки</a> &nbsp;|&nbsp;
-                    <a href="/about">Про нас</a> &nbsp;|&nbsp;
-                    <a href="/contacts">Контакти</a> &nbsp;|&nbsp;
-                    <a href="/promotions">Акції</a> &nbsp;|&nbsp;
-                    <a href="/blog">Блог</a>
-                </div>
-                <div><a href="/admin/login" style="color:#d4af37; font-size:0.8rem;">Вхід для адміна</a></div>
+
+        <!-- Статистика (кількість акцій) -->
+        <div class="promo-stats scroll-animate">
+            <div class="stat-badge"><i class="fas fa-tags"></i> <span class="value" id="promoCount">0</span> <span>активних акцій</span></div>
+            <div class="stat-badge"><i class="fas fa-calendar-alt"></i> <span>оновлюється щотижня</span></div>
+        </div>
+
+        <!-- Список акцій -->
+        <div id="promotionsList" class="promotions-grid scroll-animate">
+            <div class="spinner"><i class="fas fa-spinner fa-spin fa-2x"></i></div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <div class="logo" style="font-size: 1.4rem;">Black <span>Oromo</span> Coffee</div>
+            <div class="footer-links">
+                <a href="/">Головна</a> &nbsp;|&nbsp;
+                <a href="/menu">Меню</a> &nbsp;|&nbsp;
+                <a href="/reviews">Відгуки</a> &nbsp;|&nbsp;
+                <a href="/about">Про нас</a> &nbsp;|&nbsp;
+                <a href="/contacts">Контакти</a> &nbsp;|&nbsp;
+                <a href="/promotions">Акції</a> &nbsp;|&nbsp;
+                <a href="/blog">Блог</a>
             </div>
-            <p style="margin-top: 32px;">© 2026 Black Oromo Coffee. Ваша кава з любов'ю.</p>
+            <div><a href="/admin/login" style="color:#d4af37; font-size:0.8rem;">Вхід для адміна</a></div>
         </div>
-    </footer>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/chat-sidebar.js"></script>
-    <script>
-        async function loadPromotions() {
-            try {
-                const res = await fetch('/api/promotions');
-                const promotions = await res.json();
-                const container = document.getElementById('promotionsList');
-                if (promotions.length === 0) {
-                    container.innerHTML = '<div class="empty-state"><i class="fas fa-tags"></i><p>Наразі немає активних акцій. Слідкуйте за оновленнями!</p></div>';
-                    return;
-                }
-                container.innerHTML = promotions.map(p => `
-                    <div class="promo-card">
-                        ${p.image_url ? `<img src="${p.image_url}" alt="${p.title}">` : '<div style="height:200px;background:#2a241f;display:flex;align-items:center;justify-content:center;"><i class="fas fa-tag" style="font-size:3rem;color:var(--gold);"></i></div>'}
-                        <div class="promo-card-content">
-                            <div class="promo-title">${escapeHtml(p.title)}</div>
-                            <div class="promo-date">${p.start_date ? 'З ' + p.start_date : ''} ${p.end_date ? ' до ' + p.end_date : ''}</div>
-                            <div class="promo-desc">${escapeHtml(p.description || '')}</div>
-                        </div>
+        <div style="text-align: center; margin-top: 24px; font-size: 0.75rem; opacity: 0.6;">
+            Version: BOS-1.7.24-R
+        </div>
+        <p style="margin-top: 16px;">© 2026 Black Oromo Coffee. Ваша кава з любов'ю.</p>
+    </div>
+</footer>
+
+<div id="scrollToTopBtn" class="scroll-to-top">
+    <i class="fas fa-arrow-up"></i>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/chat-sidebar.js"></script>
+<script>
+    // Кнопка "Вгору"
+    const scrollBtn = document.getElementById('scrollToTopBtn');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) scrollBtn.classList.add('visible');
+        else scrollBtn.classList.remove('visible');
+    });
+    scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    async function loadPromotions() {
+        const container = document.getElementById('promotionsList');
+        container.innerHTML = '<div class="spinner"><i class="fas fa-spinner fa-spin fa-2x"></i></div>';
+        try {
+            const res = await fetch('/api/promotions');
+            const promotions = await res.json();
+            document.getElementById('promoCount').innerText = promotions.length;
+            if (promotions.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-tags"></i><p>Наразі немає активних акцій. Слідкуйте за оновленнями!</p></div>';
+                return;
+            }
+            container.innerHTML = promotions.map(p => `
+                <div class="promo-card">
+                    ${p.image_url ? `<img src="${p.image_url}" alt="${escapeHtml(p.title)}">` : '<div style="height:200px;background:#2a241f;display:flex;align-items:center;justify-content:center;"><i class="fas fa-tag" style="font-size:3rem;color:var(--gold);"></i></div>'}
+                    <div class="promo-card-content">
+                        <div class="promo-title">${escapeHtml(p.title)}</div>
+                        <div class="promo-date"><i class="far fa-calendar-alt"></i> ${p.start_date ? 'з ' + p.start_date : ''} ${p.end_date ? ' до ' + p.end_date : ''}</div>
+                        <div class="promo-desc">${escapeHtml(p.description || '')}</div>
+                        <div class="promo-tag"><i class="fas fa-percent"></i> Акція</div>
                     </div>
-                `).join('');
-            } catch(e) { document.getElementById('promotionsList').innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Помилка завантаження</p></div>'; }
+                </div>
+            `).join('');
+        } catch(e) {
+            console.error(e);
+            container.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p>Помилка завантаження. Спробуйте пізніше.</p></div>';
         }
-        function escapeHtml(str) { return str.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':m==='>'?'&gt;':m); }
-        loadPromotions();
-        // ваш код checkUser() та інші скрипти
-    </script>
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+    }
+
+    async function checkUser() {
+        try {
+            const res = await fetch('/api/user');
+            if (res.ok) {
+                const user = await res.json();
+                document.getElementById('userWidget').innerHTML = `
+                    <div class="user-info">
+                        <img src="${user.photo || 'https://ui-avatars.com/api/?background=d4af37&color=0b0a09&name='+encodeURIComponent(user.name)}" class="user-avatar">
+                        <span>${user.name}</span>
+                        <a href="/logout" class="btn-outline" style="padding:4px 12px;">Вийти</a>
+                    </div>
+                `;
+            } else {
+                document.getElementById('userWidget').innerHTML = `<a href="/auth/google" class="btn"><i class="fab fa-google"></i> Увійти через Google</a>`;
+            }
+        } catch(e) { console.log(e); }
+    }
+    checkUser();
+
+    // Анімація появи при скролі
+    const animated = document.querySelectorAll('.scroll-animate');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+    }, { threshold: 0.2 });
+    animated.forEach(el => observer.observe(el));
+
+    loadPromotions();
+</script>
 </body>
 </html>
