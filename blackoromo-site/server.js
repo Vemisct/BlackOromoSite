@@ -398,6 +398,16 @@ app.get('/api/user', (req, res) => {
     else res.status(401).json({ error: 'not logged in' });
 });
 
+// ========== СТОРІНКИ ==========
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.get('/menu', (req, res) => res.sendFile(path.join(__dirname, 'public', 'menu.html')));
+app.get('/reviews', (req, res) => res.sendFile(path.join(__dirname, 'public', 'reviews.html')));
+app.get('/about', (req, res) => res.sendFile(path.join(__dirname, 'public', 'about.html')));
+app.get('/contacts', (req, res) => res.sendFile(path.join(__dirname, 'public', 'contacts.html')));
+app.get('/promotions', (req, res) => res.sendFile(path.join(__dirname, 'public', 'promotions.html')));
+app.get('/blog', (req, res) => res.sendFile(path.join(__dirname, 'public', 'blog.html')));
+app.get('/blog-post', (req, res) => res.sendFile(path.join(__dirname, 'public', 'blog-post.html')));
+
 // WebSocket
 io.on('connection', (socket) => {
     console.log('Client connected');
