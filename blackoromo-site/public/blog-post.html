@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Стаття | Black Oromo Coffee</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .post-container { max-width: 800px; margin: 0 auto; background: rgba(20,18,16,0.5); border-radius: 48px; padding: 2rem; }
+        .post-title { font-size: 2.2rem; font-family: 'Playfair Display', serif; margin-bottom: 1rem; }
+        .post-date { color: var(--gold); margin-bottom: 2rem; display: block; }
+        .post-image { width: 100%; border-radius: 32px; margin: 1.5rem 0; }
+        .post-content { line-height: 1.8; font-size: 1.05rem; }
+        .post-content p { margin-bottom: 1.2rem; }
+        .back-link { display: inline-block; margin-top: 2rem; color: var(--gold); }
+    </style>
+</head>
+<body>
+    <header>... (ваш header) ...</header>
+    <main>
+        <div class="container" style="padding: 40px 0 60px;">
+            <div id="postContent" class="post-container"><div style="text-align:center;"><i class="fas fa-spinner fa-spin"></i> Завантаження...</div></div>
+        </div>
+    </main>
+    <footer>... (ваш footer) ...</footer>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/chat-sidebar.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get('id');
+        if (!postId) {
+            document.getElementById('postContent').innerHTML = '<div class="post-container"><p>Невірний запит</p><a href="/blog.html" class="back-link">← Назад до блогу</a></div>';
+        } else {
+            fetch(`/api/posts/${postId}`)
+                .then(res => res.json())
+                .then(post => {
+                    if (!post || !post.id) throw new Error();
+                    document.title = `${post.title} | Black Oromo Coffee`;
+                    document.getElementById('postContent').innerHTML = `
+                        <h1 class="post-title">${escapeHtml(post.title)}</h1>
+                        <div class="post-date">${new Date(post.created_at).toLocaleDateString('uk-UA')}</div>
+                        ${post.image_url ? `<img src="${post.image_url}" class="post-image" alt="${post.title}">` : ''}
+                        <div class="post-content">${escapeHtml(post.content).replace(/\n/g, '<br>')}</div>
+                        <a href="/blog.html" class="back-link"><i class="fas fa-arrow-left"></i> Назад до блогу</a>
+                    `;
+                })
+                .catch(() => {
+                    document.getElementById('postContent').innerHTML = '<div class="post-container"><p>Статтю не знайдено</p><a href="/blog.html" class="back-link">← Назад до блогу</a></div>';
+                });
+        }
+        function escapeHtml(str) { return str.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':m==='>'?'&gt;':m); }
+    </script>
+</body>
+</html>

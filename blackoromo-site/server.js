@@ -91,55 +91,81 @@ app.get('/logout', (req, res) => { req.logout(() => res.redirect('/')); });
 async function initTables() {
     try {
         const conn = await pool.getConnection();
-        await conn.query(`
-            CREATE TABLE IF NOT EXISTS menu (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                category TEXT,
-                name TEXT,
-                price TEXT,
-                description TEXT
-            );
-            CREATE TABLE IF NOT EXISTS messages (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                user_id TEXT,
-                user_name TEXT,
-                user_email TEXT,
-                text TEXT,
-                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-            CREATE TABLE IF NOT EXISTS reviews (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                user_name TEXT,
-                user_email TEXT,
-                rating INT,
-                text TEXT,
-                approved INT DEFAULT 0,
-                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-            CREATE TABLE IF NOT EXISTS admins (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                username VARCHAR(255) UNIQUE,
-                password_hash VARCHAR(255)
-            );
-            CREATE TABLE IF NOT EXISTS page_views (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                page TEXT,
-                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-            CREATE TABLE IF NOT EXISTS user_sessions (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                user_id VARCHAR(255) UNIQUE,
-                user_email TEXT,
-                last_active TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-            CREATE TABLE IF NOT EXISTS contacts (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                name TEXT,
-                email TEXT,
-                message TEXT,
-                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-        `);
+        
+        await conn.query(`CREATE TABLE IF NOT EXISTS menu (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            category TEXT,
+            name TEXT,
+            price TEXT,
+            description TEXT
+        )`);
+        
+        await conn.query(`CREATE TABLE IF NOT EXISTS messages (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id TEXT,
+            user_name TEXT,
+            user_email TEXT,
+            text TEXT,
+            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )`);
+        
+        await conn.query(`CREATE TABLE IF NOT EXISTS reviews (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_name TEXT,
+            user_email TEXT,
+            rating INT,
+            text TEXT,
+            approved INT DEFAULT 0,
+            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )`);
+        
+        await conn.query(`CREATE TABLE IF NOT EXISTS admins (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            username VARCHAR(255) UNIQUE,
+            password_hash VARCHAR(255)
+        )`);
+        
+        await conn.query(`CREATE TABLE IF NOT EXISTS page_views (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            page TEXT,
+            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )`);
+        
+        await conn.query(`CREATE TABLE IF NOT EXISTS user_sessions (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id VARCHAR(255) UNIQUE,
+            user_email TEXT,
+            last_active TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )`);
+        
+        await conn.query(`CREATE TABLE IF NOT EXISTS contacts (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name TEXT,
+            email TEXT,
+            message TEXT,
+            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )`);
+
+        await conn.query(`CREATE TABLE IF NOT EXISTS promotions (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            title VARCHAR(255) NOT NULL,
+            description TEXT,
+            image_url TEXT,
+            start_date DATE,
+            end_date DATE,
+            is_active BOOLEAN DEFAULT 1,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )`);
+
+        await conn.query(`CREATE TABLE IF NOT EXISTS posts (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            title VARCHAR(255) NOT NULL,
+            content TEXT NOT NULL,
+            excerpt TEXT,
+            image_url TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )`);
+        
         const [admins] = await conn.query(`SELECT id FROM admins WHERE username = 'admin'`);
         if (admins.length === 0) {
             const hash = bcrypt.hashSync('password123', 10);
@@ -227,7 +253,78 @@ app.post('/api/contact', async (req, res) => {
     } catch(e) { res.status(500).json({ error: 'Помилка сервера' }); }
 });
 
+// ========== АКЦІЇ (публічні) ==========
+app.get('/api/promotions', async (req, res) => {
+    try {
+        const [rows] = await pool.query(`SELECT * FROM promotions WHERE is_active = 1 AND (start_date <= CURDATE() OR start_date IS NULL) AND (end_date >= CURDATE() OR end_date IS NULL) ORDER BY created_at DESC`);
+        res.json(rows);
+    } catch(e) { res.status(500).json({ error: 'Помилка сервера' }); }
+});
+
+// ========== БЛОГ (публічні) ==========
+app.get('/api/posts', async (req, res) => {
+    try {
+        const [rows] = await pool.query(`SELECT id, title, excerpt, image_url, DATE(created_at) as date FROM posts ORDER BY created_at DESC`);
+        res.json(rows);
+    } catch(e) { res.status(500).json({ error: 'Помилка сервера' }); }
+});
+
+app.get('/api/posts/:id', async (req, res) => {
+    try {
+        const [rows] = await pool.query(`SELECT * FROM posts WHERE id = ?`, [req.params.id]);
+        if (rows.length === 0) return res.status(404).json({ error: 'Пост не знайдено' });
+        res.json(rows[0]);
+    } catch(e) { res.status(500).json({ error: 'Помилка сервера' }); }
+});
+
 // ========== API ДЛЯ АДМІНА ==========
+app.get('/api/admin/promotions', isAdmin, async (req, res) => {
+    try { const [rows] = await pool.query(`SELECT * FROM promotions ORDER BY created_at DESC`); res.json(rows); } catch(e) { res.status(500).json({ error: e.message }); }
+});
+app.post('/api/admin/promotions', isAdmin, async (req, res) => {
+    const { title, description, image_url, start_date, end_date, is_active } = req.body;
+    if (!title) return res.status(400).json({ error: 'Назва обов\'язкова' });
+    try {
+        const [result] = await pool.query(`INSERT INTO promotions (title, description, image_url, start_date, end_date, is_active) VALUES (?, ?, ?, ?, ?, ?)`, [title, description, image_url, start_date, end_date, is_active !== undefined ? is_active : 1]);
+        res.json({ id: result.insertId });
+    } catch(e) { res.status(500).json({ error: e.message }); }
+});
+app.put('/api/admin/promotions/:id', isAdmin, async (req, res) => {
+    const { title, description, image_url, start_date, end_date, is_active } = req.body;
+    try {
+        await pool.query(`UPDATE promotions SET title=?, description=?, image_url=?, start_date=?, end_date=?, is_active=? WHERE id=?`, [title, description, image_url, start_date, end_date, is_active, req.params.id]);
+        res.json({ success: true });
+    } catch(e) { res.status(500).json({ error: e.message }); }
+});
+app.delete('/api/admin/promotions/:id', isAdmin, async (req, res) => {
+    try { await pool.query(`DELETE FROM promotions WHERE id = ?`, [req.params.id]); res.json({ success: true }); } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/admin/posts', isAdmin, async (req, res) => {
+    try { const [rows] = await pool.query(`SELECT id, title, excerpt, image_url, DATE(created_at) as date FROM posts ORDER BY created_at DESC`); res.json(rows); } catch(e) { res.status(500).json({ error: e.message }); }
+});
+app.post('/api/admin/posts', isAdmin, async (req, res) => {
+    const { title, content, excerpt, image_url } = req.body;
+    if (!title || !content) return res.status(400).json({ error: 'Назва та текст обов\'язкові' });
+    try {
+        const [result] = await pool.query(`INSERT INTO posts (title, content, excerpt, image_url) VALUES (?, ?, ?, ?)`, [title, content, excerpt || content.substring(0, 150), image_url]);
+        res.json({ id: result.insertId });
+    } catch(e) { res.status(500).json({ error: e.message }); }
+});
+app.get('/api/admin/posts/:id', isAdmin, async (req, res) => {
+    try { const [rows] = await pool.query(`SELECT * FROM posts WHERE id = ?`, [req.params.id]); res.json(rows[0]); } catch(e) { res.status(500).json({ error: e.message }); }
+});
+app.put('/api/admin/posts/:id', isAdmin, async (req, res) => {
+    const { title, content, excerpt, image_url } = req.body;
+    try {
+        await pool.query(`UPDATE posts SET title=?, content=?, excerpt=?, image_url=? WHERE id=?`, [title, content, excerpt, image_url, req.params.id]);
+        res.json({ success: true });
+    } catch(e) { res.status(500).json({ error: e.message }); }
+});
+app.delete('/api/admin/posts/:id', isAdmin, async (req, res) => {
+    try { await pool.query(`DELETE FROM posts WHERE id = ?`, [req.params.id]); res.json({ success: true }); } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
 function isAdmin(req, res, next) {
     if (req.session.admin) return next();
     res.status(401).redirect('/admin/login');

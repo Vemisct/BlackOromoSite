@@ -8,92 +8,51 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/style.css">
     <style>
-        .coming-soon {
-            text-align: center;
-            padding: 100px 20px;
-        }
-        .coming-soon i {
-            font-size: 5rem;
-            color: #d4af37;
-            margin-bottom: 30px;
-        }
-        .coming-soon h1 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
+        .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; margin: 3rem 0; }
+        .blog-card { background: rgba(20,18,16,0.7); backdrop-filter: blur(8px); border-radius: 32px; overflow: hidden; transition: 0.3s; border: 1px solid rgba(212,175,55,0.2); text-decoration: none; color: inherit; display: block; }
+        .blog-card:hover { transform: translateY(-5px); border-color: var(--gold); }
+        .blog-card img { width: 100%; height: 200px; object-fit: cover; background: #2a241f; }
+        .blog-card-content { padding: 1.5rem; }
+        .blog-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--gold); }
+        .blog-date { font-size: 0.8rem; opacity: 0.7; margin-bottom: 1rem; }
+        .blog-excerpt { color: var(--text-muted); line-height: 1.5; }
     </style>
 </head>
 <body>
-
-<header>
-    <div class="container">
-        <div class="navbar">
-            <div class="logo">Black <span>Oromo</span> Coffee</div>
-            <div class="nav-links">
-                <a href="/">Головна</a>
-                <a href="/menu">Меню</a>
-                <a href="/reviews">Відгуки</a>
-                <a href="/about">Про нас</a>
-                <a href="/contacts">Контакти</a>
-                <a href="/promotions">Акції</a>
-                <a href="/blog">Блог</a>
-                <div id="userWidget"></div>
-            </div>
+    <header>... (ваш header) ...</header>
+    <main>
+        <div class="container" style="padding: 40px 0 60px;">
+            <h2 class="section-title">Блог</h2>
+            <div id="blogList" class="blog-grid"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i> Завантаження...</div></div>
         </div>
-    </div>
-</header>
-
-<main>
-    <div class="container">
-        <div class="coming-soon">
-            <i class="fas fa-book-open"></i>
-            <h1>Блог</h1>
-            <p>Сторінка в розробці. Скоро тут будуть цікаві статті про каву та наш заклад!</p>
-            <a href="/" class="btn" style="margin-top: 30px; display: inline-block;">На головну</a>
-        </div>
-    </div>
-</main>
-
-<footer>
-    <div class="container">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
-            <div class="logo" style="font-size: 1.4rem;">Black <span>Oromo</span> Coffee</div>
-            <div class="footer-links">
-                <a href="/">Головна</a> &nbsp;|&nbsp;
-                <a href="/menu">Меню</a> &nbsp;|&nbsp;
-                <a href="/reviews">Відгуки</a> &nbsp;|&nbsp;
-                <a href="/about">Про нас</a> &nbsp;|&nbsp;
-                <a href="/contacts">Контакти</a> &nbsp;|&nbsp;
-                <a href="/promotions">Акції</a> &nbsp;|&nbsp;
-                <a href="/blog">Блог</a>
-            </div>
-            <div><a href="/admin/login" style="color:#d4af37; font-size:0.8rem;">Вхід для адміна</a></div>
-        </div>
-        <p style="margin-top: 32px;">© 2026 Black Oromo Coffee. Ваша кава з любов'ю.</p>
-    </div>
-</footer>
-
-<script src="/socket.io/socket.io.js"></script>
-<script src="/chat-sidebar.js"></script>
-<script>
-    async function checkUser() {
-        try {
-            const res = await fetch('/api/user');
-            if (res.ok) {
-                const user = await res.json();
-                document.getElementById('userWidget').innerHTML = `
-                    <div class="user-info">
-                        <img src="${user.photo || 'https://ui-avatars.com/api/?background=d4af37&color=0b0a09&name='+encodeURIComponent(user.name)}" class="user-avatar">
-                        <span>${user.name}</span>
-                        <a href="/logout" class="btn-outline" style="padding:4px 12px;">Вийти</a>
-                    </div>
-                `;
-            } else {
-                document.getElementById('userWidget').innerHTML = `<a href="/auth/google" class="btn"><i class="fab fa-google"></i> Увійти через Google</a>`;
-            }
-        } catch(e) { console.log(e); }
-    }
-    checkUser();
-</script>
+    </main>
+    <footer>... (ваш footer) ...</footer>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/chat-sidebar.js"></script>
+    <script>
+        async function loadPosts() {
+            try {
+                const res = await fetch('/api/posts');
+                const posts = await res.json();
+                const container = document.getElementById('blogList');
+                if (posts.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-book-open"></i><p>Поки немає статей. Завітайте пізніше!</p></div>';
+                    return;
+                }
+                container.innerHTML = posts.map(p => `
+                    <a href="/blog-post.html?id=${p.id}" class="blog-card">
+                        ${p.image_url ? `<img src="${p.image_url}" alt="${p.title}">` : '<div style="height:200px;background:#2a241f;display:flex;align-items:center;justify-content:center;"><i class="fas fa-newspaper" style="font-size:3rem;color:var(--gold);"></i></div>'}
+                        <div class="blog-card-content">
+                            <div class="blog-title">${escapeHtml(p.title)}</div>
+                            <div class="blog-date">${p.date}</div>
+                            <div class="blog-excerpt">${escapeHtml(p.excerpt || '')}</div>
+                        </div>
+                    </a>
+                `).join('');
+            } catch(e) { container.innerHTML = '<div class="empty-state">Помилка завантаження</div>'; }
+        }
+        function escapeHtml(str) { return str.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':m==='>'?'&gt;':m); }
+        loadPosts();
+    </script>
 </body>
 </html>

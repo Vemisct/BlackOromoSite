@@ -310,6 +310,8 @@
         <div class="nav-item" data-tab="menu"><i class="fas fa-utensils"></i> <span>Керування меню</span></div>
         <div class="nav-item" data-tab="reviews"><i class="fas fa-star"></i> <span>Відгуки</span></div>
         <div class="nav-item" data-tab="chat"><i class="fas fa-comments"></i> <span>Чат з клієнтами</span></div>
+        <div class="nav-item" data-tab="promotions"><i class="fas fa-tags"></i> <span>Акції</span></div>
+        <div class="nav-item" data-tab="blog"><i class="fas fa-blog"></i> <span>Блог</span></div>
         <div class="nav-item logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span>Вийти</span></div>
     </div>
     <div class="main-content">
@@ -360,6 +362,38 @@
             <div id="adminChatMessages" class="chat-messages-admin"></div>
             <div class="reply-area"><input type="text" id="adminReplyInput" placeholder="Відповідь від адміна..."><button id="sendAdminReplyBtn">Надіслати</button></div>
         </div>
+
+        <!-- Акції -->
+        <div id="promotionsTab" class="tab-content hidden">
+            <div class="page-header"><h1><i class="fas fa-tags"></i> Акції та події</h1></div>
+            <div class="menu-toolbar"><button id="addPromotionBtn" class="btn" style="background:var(--gold);color:#0b0a09;border:none;padding:8px 20px;border-radius:40px;"><i class="fas fa-plus"></i> Додати акцію</button></div>
+            <div style="overflow-x:auto;"><table class="menu-table"><thead><tr><th>Назва</th><th>Опис</th><th>Дата початку</th><th>Дата завершення</th><th>Активна</th><th>Дії</th></tr></thead><tbody id="promotionsTableBody"></tbody></table></div>
+            <div id="promotionForm" class="add-form" style="display:none; grid-template-columns:1fr 1fr;">
+                <input type="text" id="promoTitle" placeholder="Назва акції" required>
+                <textarea id="promoDesc" placeholder="Опис" rows="2"></textarea>
+                <input type="text" id="promoImage" placeholder="URL зображення">
+                <input type="date" id="promoStartDate" placeholder="Дата початку">
+                <input type="date" id="promoEndDate" placeholder="Дата завершення">
+                <label style="display:flex;align-items:center;gap:10px;"><input type="checkbox" id="promoActive" checked> Активна</label>
+                <button id="savePromotionBtn" style="background:var(--gold);">Зберегти</button>
+                <button id="cancelPromotionBtn" style="background:#555;">Скасувати</button>
+            </div>
+        </div>
+
+        <!-- Блог -->
+        <div id="blogTab" class="tab-content hidden">
+            <div class="page-header"><h1><i class="fas fa-blog"></i> Управління блогом</h1></div>
+            <div class="menu-toolbar"><button id="addPostBtn" class="btn" style="background:var(--gold);color:#0b0a09;border:none;padding:8px 20px;border-radius:40px;"><i class="fas fa-plus"></i> Додати пост</button></div>
+            <div style="overflow-x:auto;"><table class="menu-table"><thead><tr><th>ID</th><th>Заголовок</th><th>Дата</th><th>Дії</th></tr></thead><tbody id="postsTableBody"></tbody></table></div>
+            <div id="postForm" class="add-form" style="display:none; grid-template-columns:1fr 1fr;">
+                <input type="text" id="postTitle" placeholder="Заголовок" required>
+                <input type="text" id="postImage" placeholder="URL зображення">
+                <textarea id="postExcerpt" placeholder="Короткий опис (не обов'язково)" rows="2"></textarea>
+                <textarea id="postContent" placeholder="Повний текст статті" rows="5" required></textarea>
+                <button id="savePostBtn" style="background:var(--gold);">Зберегти</button>
+                <button id="cancelPostBtn" style="background:#555;">Скасувати</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -400,6 +434,8 @@
             if (tabName === 'menu') renderMenuTable();
             if (tabName === 'reviews') loadReviews();
             if (tabName === 'chat') loadChatHistory();
+            if (tabName === 'promotions') loadPromotions();
+            if (tabName === 'blog') loadPosts();
             if (tabName === 'dashboard') { loadStats(); loadChartData(); }
         });
     });
@@ -635,6 +671,142 @@
     const urlParams = new URLSearchParams(window.location.search);
     const tab = urlParams.get('tab');
     if (tab && contents[tab]) document.querySelector(`.nav-item[data-tab="${tab}"]`).click();
+
+    // ---------- Акції ----------
+    let currentPromoId = null;
+    async function loadPromotions() {
+        try {
+            const res = await fetch('/api/admin/promotions');
+            const items = await res.json();
+            const tbody = document.getElementById('promotionsTableBody');
+            tbody.innerHTML = '';
+            items.forEach(p => {
+                const row = tbody.insertRow();
+                row.insertCell(0).innerText = p.title;
+                row.insertCell(1).innerText = p.description?.substring(0, 50) || '';
+                row.insertCell(2).innerText = p.start_date || '-';
+                row.insertCell(3).innerText = p.end_date || '-';
+                row.insertCell(4).innerHTML = p.is_active ? '✅ Так' : '❌ Ні';
+                const actions = row.insertCell(5);
+                const editBtn = document.createElement('button'); editBtn.innerHTML = '<i class="fas fa-edit"></i>'; editBtn.className = 'edit-btn'; editBtn.onclick = () => editPromotion(p);
+                const delBtn = document.createElement('button'); delBtn.innerHTML = '<i class="fas fa-trash-alt"></i>'; delBtn.className = 'delete-btn'; delBtn.onclick = () => deletePromotion(p.id);
+                actions.appendChild(editBtn); actions.appendChild(delBtn);
+            });
+        } catch(e) { showNotification('Помилка завантаження акцій', true); }
+    }
+    function editPromotion(p) {
+        currentPromoId = p.id;
+        document.getElementById('promoTitle').value = p.title;
+        document.getElementById('promoDesc').value = p.description || '';
+        document.getElementById('promoImage').value = p.image_url || '';
+        document.getElementById('promoStartDate').value = p.start_date ? p.start_date.split('T')[0] : '';
+        document.getElementById('promoEndDate').value = p.end_date ? p.end_date.split('T')[0] : '';
+        document.getElementById('promoActive').checked = p.is_active === 1;
+        document.getElementById('promotionForm').style.display = 'grid';
+    }
+    async function deletePromotion(id) {
+        if (!confirm('Видалити акцію?')) return;
+        try {
+            const res = await fetch(`/api/admin/promotions/${id}`, { method: 'DELETE' });
+            if (res.ok) { loadPromotions(); showNotification('✅ Акцію видалено'); }
+            else showNotification('❌ Помилка', true);
+        } catch(e) { showNotification('❌ Помилка мережі', true); }
+    }
+    document.getElementById('addPromotionBtn').onclick = () => {
+        currentPromoId = null;
+        document.getElementById('promoTitle').value = '';
+        document.getElementById('promoDesc').value = '';
+        document.getElementById('promoImage').value = '';
+        document.getElementById('promoStartDate').value = '';
+        document.getElementById('promoEndDate').value = '';
+        document.getElementById('promoActive').checked = true;
+        document.getElementById('promotionForm').style.display = 'grid';
+    };
+    document.getElementById('savePromotionBtn').onclick = async () => {
+        const data = {
+            title: document.getElementById('promoTitle').value.trim(),
+            description: document.getElementById('promoDesc').value.trim(),
+            image_url: document.getElementById('promoImage').value.trim(),
+            start_date: document.getElementById('promoStartDate').value || null,
+            end_date: document.getElementById('promoEndDate').value || null,
+            is_active: document.getElementById('promoActive').checked ? 1 : 0
+        };
+        if (!data.title) { showNotification('Введіть назву', true); return; }
+        const url = currentPromoId ? `/api/admin/promotions/${currentPromoId}` : '/api/admin/promotions';
+        const method = currentPromoId ? 'PUT' : 'POST';
+        try {
+            const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+            if (res.ok) { loadPromotions(); document.getElementById('promotionForm').style.display = 'none'; showNotification('✅ Збережено'); }
+            else showNotification('❌ Помилка', true);
+        } catch(e) { showNotification('❌ Помилка мережі', true); }
+    };
+    document.getElementById('cancelPromotionBtn').onclick = () => document.getElementById('promotionForm').style.display = 'none';
+
+    // ---------- Блог ----------
+    let currentPostId = null;
+    async function loadPosts() {
+        try {
+            const res = await fetch('/api/admin/posts');
+            const posts = await res.json();
+            const tbody = document.getElementById('postsTableBody');
+            tbody.innerHTML = '';
+            posts.forEach(p => {
+                const row = tbody.insertRow();
+                row.insertCell(0).innerText = p.id;
+                row.insertCell(1).innerText = p.title;
+                row.insertCell(2).innerText = p.date || '-';
+                const actions = row.insertCell(3);
+                const editBtn = document.createElement('button'); editBtn.innerHTML = '<i class="fas fa-edit"></i>'; editBtn.className = 'edit-btn'; editBtn.onclick = () => editPost(p.id);
+                const delBtn = document.createElement('button'); delBtn.innerHTML = '<i class="fas fa-trash-alt"></i>'; delBtn.className = 'delete-btn'; delBtn.onclick = () => deletePost(p.id);
+                actions.appendChild(editBtn); actions.appendChild(delBtn);
+            });
+        } catch(e) { showNotification('Помилка завантаження постів', true); }
+    }
+    async function editPost(id) {
+        try {
+            const res = await fetch(`/api/admin/posts/${id}`);
+            const post = await res.json();
+            currentPostId = post.id;
+            document.getElementById('postTitle').value = post.title;
+            document.getElementById('postImage').value = post.image_url || '';
+            document.getElementById('postExcerpt').value = post.excerpt || '';
+            document.getElementById('postContent').value = post.content;
+            document.getElementById('postForm').style.display = 'grid';
+        } catch(e) { showNotification('Помилка завантаження поста', true); }
+    }
+    async function deletePost(id) {
+        if (!confirm('Видалити пост?')) return;
+        try {
+            const res = await fetch(`/api/admin/posts/${id}`, { method: 'DELETE' });
+            if (res.ok) { loadPosts(); showNotification('✅ Пост видалено'); }
+            else showNotification('❌ Помилка', true);
+        } catch(e) { showNotification('❌ Помилка мережі', true); }
+    }
+    document.getElementById('addPostBtn').onclick = () => {
+        currentPostId = null;
+        document.getElementById('postTitle').value = '';
+        document.getElementById('postImage').value = '';
+        document.getElementById('postExcerpt').value = '';
+        document.getElementById('postContent').value = '';
+        document.getElementById('postForm').style.display = 'grid';
+    };
+    document.getElementById('savePostBtn').onclick = async () => {
+        const data = {
+            title: document.getElementById('postTitle').value.trim(),
+            content: document.getElementById('postContent').value.trim(),
+            excerpt: document.getElementById('postExcerpt').value.trim(),
+            image_url: document.getElementById('postImage').value.trim()
+        };
+        if (!data.title || !data.content) { showNotification('Заповніть заголовок та текст', true); return; }
+        const url = currentPostId ? `/api/admin/posts/${currentPostId}` : '/api/admin/posts';
+        const method = currentPostId ? 'PUT' : 'POST';
+        try {
+            const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+            if (res.ok) { loadPosts(); document.getElementById('postForm').style.display = 'none'; showNotification('✅ Збережено'); }
+            else showNotification('❌ Помилка', true);
+        } catch(e) { showNotification('❌ Помилка мережі', true); }
+    };
+    document.getElementById('cancelPostBtn').onclick = () => document.getElementById('postForm').style.display = 'none';
 </script>
 </body>
 </html>
