@@ -19,14 +19,47 @@
     </style>
 </head>
 <body>
-    <header>... (ваш header) ...</header>
+    <header>
+        <div class="container">
+            <div class="navbar">
+                <div class="logo">Black <span>Oromo</span> Coffee</div>
+                <div class="nav-links">
+                    <a href="/">Головна</a>
+                    <a href="/menu">Меню</a>
+                    <a href="/reviews">Відгуки</a>
+                    <a href="/about">Про нас</a>
+                    <a href="/contacts">Контакти</a>
+                    <a href="/promotions">Акції</a>
+                    <a href="/blog">Блог</a>
+                    <div id="userWidget"></div>
+                </div>
+            </div>
+        </div>
+    </header>
     <main>
         <div class="container" style="padding: 40px 0 60px;">
             <h2 class="section-title">Блог</h2>
             <div id="blogList" class="blog-grid"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i> Завантаження...</div></div>
         </div>
     </main>
-    <footer>... (ваш footer) ...</footer>
+    <footer>
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+                <div class="logo" style="font-size: 1.4rem;">Black <span>Oromo</span> Coffee</div>
+                <div class="footer-links">
+                    <a href="/">Головна</a> &nbsp;|&nbsp;
+                    <a href="/menu">Меню</a> &nbsp;|&nbsp;
+                    <a href="/reviews">Відгуки</a> &nbsp;|&nbsp;
+                    <a href="/about">Про нас</a> &nbsp;|&nbsp;
+                    <a href="/contacts">Контакти</a> &nbsp;|&nbsp;
+                    <a href="/promotions">Акції</a> &nbsp;|&nbsp;
+                    <a href="/blog">Блог</a>
+                </div>
+                <div><a href="/admin/login" style="color:#d4af37; font-size:0.8rem;">Вхід для адміна</a></div>
+            </div>
+            <p style="margin-top: 32px;">© 2026 Black Oromo Coffee. Ваша кава з любов'ю.</p>
+        </div>
+    </footer>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/chat-sidebar.js"></script>
     <script>
