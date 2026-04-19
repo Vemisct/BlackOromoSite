@@ -8,8 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/style.css">
-    <!-- Додаткові стилі для конкретної сторінки -->
-    <% if (styles) { %><style><%- styles %></style><% } %>
+    <% if (typeof styles !== 'undefined' && styles) { %>
+        <style><%- styles %></style>
+    <% } %>
 </head>
 <body>
     <%- include('../partials/header') %>
@@ -32,7 +33,7 @@
         });
         scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
         
-        // Перевірка користувача для userWidget (дублюється в шапці)
+        // Перевірка користувача для userWidget
         async function checkUser() {
             try {
                 const res = await fetch('/api/user');
@@ -59,8 +60,9 @@
         }, { threshold: 0.2 });
         animated.forEach(el => observer.observe(el));
         
-        // Специфічний JS для сторінки (якщо є)
-        <% if (scripts) { %><%- scripts %><% } %>
+        <% if (typeof scripts !== 'undefined' && scripts) { %>
+            <%- scripts %>
+        <% } %>
     </script>
 </body>
 </html>

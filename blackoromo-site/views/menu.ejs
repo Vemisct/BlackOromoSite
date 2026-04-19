@@ -1,65 +1,65 @@
-<%
-const styles = `
-    .menu-page { padding-top: 20px; }
-    .menu-header { text-align: center; margin-bottom: 20px; }
-    .menu-header h1 { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; background: linear-gradient(135deg, #fff, #d4af37); background-clip: text; -webkit-background-clip: text; color: transparent; margin-bottom: 8px; }
-    .menu-filters { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 20px 0 30px; }
-    .filter-btn { background: rgba(20,18,16,0.7); backdrop-filter: blur(4px); border: 1px solid rgba(212,175,55,0.3); padding: 8px 20px; border-radius: 60px; cursor: pointer; transition: 0.2s; color: #e8e0d5; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; }
-    .filter-btn.active, .filter-btn:hover { background: #d4af37; color: #0b0a09; border-color: #d4af37; }
-    .menu-section { margin-bottom: 2.5rem; animation: fadeInUp 0.4s ease-out; }
-    .menu-section-title { font-size: 1.8rem; font-family: 'Playfair Display', serif; margin-bottom: 1.2rem; position: relative; display: inline-flex; align-items: center; gap: 12px; }
-    .menu-section-title i { font-size: 1.8rem; color: #d4af37; }
-    .menu-section-title:after { content: ''; position: absolute; bottom: -8px; left: 0; width: 50px; height: 2px; background: #d4af37; border-radius: 2px; }
-    .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
-    .menu-card { background: rgba(20,18,16,0.7); backdrop-filter: blur(8px); border-radius: 28px; padding: 1.3rem; border: 1px solid rgba(212,175,55,0.2); transition: all 0.3s; }
-    .menu-card:hover { transform: translateY(-4px); border-color: #d4af37; background: rgba(30,26,22,0.95); box-shadow: 0 15px 25px -10px rgba(212,175,55,0.15); }
-    .menu-card-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem; }
-    .menu-card-name { font-size: 1.15rem; font-weight: 700; }
-    .menu-card-price { color: #d4af37; font-weight: 700; }
-    .empty-message { text-align: center; padding: 2rem; background: rgba(20,18,16,0.5); border-radius: 40px; margin-top: 1rem; }
-    @media (max-width: 768px) { .menu-header h1 { font-size: 1.8rem; } .menu-section-title { font-size: 1.5rem; } .filter-btn { padding: 6px 14px; font-size: 0.8rem; } .menu-grid { gap: 1rem; } }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-`;
-const scripts = `
-    let allMenuItems = [];
-    let activeCategory = 'all';
-    const categoryIcons = { 'Кава': 'fas fa-mug-hot', 'Кава та напої': 'fas fa-mug-hot', 'Лимонади та коктейлі': 'fas fa-cocktail', 'Коктейлі': 'fas fa-cocktail', 'Мілкшейки, Бабл, Десерти': 'fas fa-ice-cream', 'Десерти': 'fas fa-cake-candles', 'Фастфуд': 'fas fa-hamburger', 'Перекуси': 'fas fa-hamburger', 'Закуски': 'fas fa-bowl-food', 'Вода': 'fas fa-bottle-water', 'Напої': 'fas fa-wine-bottle', 'Снеки': 'fas fa-cookie-bite', 'Морозиво': 'fas fa-ice-cream' };
-    function getCategoryIcon(cat) { if (categoryIcons[cat]) return categoryIcons[cat]; const lower = cat.toLowerCase(); if (lower.includes('кава')) return 'fas fa-mug-hot'; if (lower.includes('коктейль')||lower.includes('лимонад')) return 'fas fa-cocktail'; if (lower.includes('десерт')) return 'fas fa-cake-candles'; if (lower.includes('бургер')||lower.includes('фаст')) return 'fas fa-hamburger'; if (lower.includes('морозиво')) return 'fas fa-ice-cream'; if (lower.includes('вода')) return 'fas fa-bottle-water'; return 'fas fa-utensils'; }
-    async function loadMenuData() {
-        try {
-            const res = await fetch('/api/menu');
-            allMenuItems = await res.json();
-            if (allMenuItems.length === 0) { document.getElementById('menuSections').innerHTML = '<div class="empty-message"><i class="fas fa-utensils" style="font-size:2.5rem;opacity:0.5;margin-bottom:0.8rem;display:block;"></i><p>Меню ще не заповнене. Зайдіть в <a href="/admin/login" style="color:#d4af37;">адмін-панель</a> та додайте страви.</p></div>'; return; }
-            initFilters(); renderMenu();
-        } catch(e) { document.getElementById('menuSections').innerHTML = '<p class="error">Помилка завантаження меню</p>'; }
-    }
-    function initFilters() {
-        const categories = ['all', ...new Set(allMenuItems.map(i => i.category))];
-        const container = document.getElementById('filtersContainer');
-        container.innerHTML = categories.map(cat => { let icon = cat === 'all' ? '<i class="fas fa-th-large"></i>' : '<i class="'+getCategoryIcon(cat)+'"></i>'; return '<button class="filter-btn '+(cat===activeCategory?'active':'')+'" data-category="'+cat+'">'+icon+' '+(cat==='all'?'Всі':cat)+'</button>'; }).join('');
-        document.querySelectorAll('.filter-btn').forEach(btn => { btn.addEventListener('click', () => { activeCategory = btn.dataset.category; document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderMenu(); }); });
-    }
-    function renderMenu() {
-        const container = document.getElementById('menuSections');
-        if (!allMenuItems.length) return;
-        let filtered = activeCategory === 'all' ? allMenuItems : allMenuItems.filter(i => i.category === activeCategory);
-        const grouped = {};
-        filtered.forEach(item => { if (!grouped[item.category]) grouped[item.category] = []; grouped[item.category].push(item); });
-        if (activeCategory === 'all') {
-            container.innerHTML = Object.entries(grouped).map(([cat, items]) => '<div class="menu-section"><div class="menu-section-title"><i class="'+getCategoryIcon(cat)+'"></i>'+escapeHtml(cat)+'</div><div class="menu-grid">'+items.map(item => '<div class="menu-card"><div class="menu-card-header"><span class="menu-card-name">'+escapeHtml(item.name)+'</span><span class="menu-card-price">'+escapeHtml(item.price)+'</span></div><div class="menu-card-desc">'+escapeHtml(item.description||'')+'</div></div>').join('')+'</div></div>').join('');
-        } else {
-            container.innerHTML = '<div class="menu-section"><div class="menu-section-title"><i class="'+getCategoryIcon(activeCategory)+'"></i>'+escapeHtml(activeCategory)+'</div><div class="menu-grid">'+filtered.map(item => '<div class="menu-card"><div class="menu-card-header"><span class="menu-card-name">'+escapeHtml(item.name)+'</span><span class="menu-card-price">'+escapeHtml(item.price)+'</span></div><div class="menu-card-desc">'+escapeHtml(item.description||'')+'</div></div>').join('')+'</div></div>';
-        }
-    }
-    function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':m==='>'?'&gt;':m); }
-    loadMenuData();
-`;
-%>
-
-<%- include('layouts/layout', { body: `
+<%- include('layouts/layout', { 
+    title: 'Меню',
+    body: `
 <div class="container menu-page">
     <div class="menu-header"><h1>Black Oromo Menu</h1><p>Оберіть свою категорію та насолоджуйтесь</p></div>
     <div class="menu-filters" id="filtersContainer"></div>
     <div id="menuSections"></div>
 </div>
-`, styles, scripts }) %>
+`,
+    pageStyles: `
+        .menu-page { padding-top: 20px; }
+        .menu-header { text-align: center; margin-bottom: 20px; }
+        .menu-header h1 { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; background: linear-gradient(135deg, #fff, #d4af37); background-clip: text; -webkit-background-clip: text; color: transparent; margin-bottom: 8px; }
+        .menu-filters { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 20px 0 30px; }
+        .filter-btn { background: rgba(20,18,16,0.7); backdrop-filter: blur(4px); border: 1px solid rgba(212,175,55,0.3); padding: 8px 20px; border-radius: 60px; cursor: pointer; transition: 0.2s; color: #e8e0d5; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; }
+        .filter-btn.active, .filter-btn:hover { background: #d4af37; color: #0b0a09; border-color: #d4af37; }
+        .menu-section { margin-bottom: 2.5rem; animation: fadeInUp 0.4s ease-out; }
+        .menu-section-title { font-size: 1.8rem; font-family: 'Playfair Display', serif; margin-bottom: 1.2rem; position: relative; display: inline-flex; align-items: center; gap: 12px; }
+        .menu-section-title i { font-size: 1.8rem; color: #d4af37; }
+        .menu-section-title:after { content: ''; position: absolute; bottom: -8px; left: 0; width: 50px; height: 2px; background: #d4af37; border-radius: 2px; }
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+        .menu-card { background: rgba(20,18,16,0.7); backdrop-filter: blur(8px); border-radius: 28px; padding: 1.3rem; border: 1px solid rgba(212,175,55,0.2); transition: all 0.3s; }
+        .menu-card:hover { transform: translateY(-4px); border-color: #d4af37; background: rgba(30,26,22,0.95); box-shadow: 0 15px 25px -10px rgba(212,175,55,0.15); }
+        .menu-card-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem; }
+        .menu-card-name { font-size: 1.15rem; font-weight: 700; }
+        .menu-card-price { color: #d4af37; font-weight: 700; }
+        .empty-message { text-align: center; padding: 2rem; background: rgba(20,18,16,0.5); border-radius: 40px; margin-top: 1rem; }
+        @media (max-width: 768px) { .menu-header h1 { font-size: 1.8rem; } .menu-section-title { font-size: 1.5rem; } .filter-btn { padding: 6px 14px; font-size: 0.8rem; } .menu-grid { gap: 1rem; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    `,
+    pageScripts: `
+        let allMenuItems = [];
+        let activeCategory = 'all';
+        const categoryIcons = { 'Кава': 'fas fa-mug-hot', 'Кава та напої': 'fas fa-mug-hot', 'Лимонади та коктейлі': 'fas fa-cocktail', 'Коктейлі': 'fas fa-cocktail', 'Мілкшейки, Бабл, Десерти': 'fas fa-ice-cream', 'Десерти': 'fas fa-cake-candles', 'Фастфуд': 'fas fa-hamburger', 'Перекуси': 'fas fa-hamburger', 'Закуски': 'fas fa-bowl-food', 'Вода': 'fas fa-bottle-water', 'Напої': 'fas fa-wine-bottle', 'Снеки': 'fas fa-cookie-bite', 'Морозиво': 'fas fa-ice-cream' };
+        function getCategoryIcon(cat) { if (categoryIcons[cat]) return categoryIcons[cat]; const lower = cat.toLowerCase(); if (lower.includes('кава')) return 'fas fa-mug-hot'; if (lower.includes('коктейль')||lower.includes('лимонад')) return 'fas fa-cocktail'; if (lower.includes('десерт')) return 'fas fa-cake-candles'; if (lower.includes('бургер')||lower.includes('фаст')) return 'fas fa-hamburger'; if (lower.includes('морозиво')) return 'fas fa-ice-cream'; if (lower.includes('вода')) return 'fas fa-bottle-water'; return 'fas fa-utensils'; }
+        async function loadMenuData() {
+            try {
+                const res = await fetch('/api/menu');
+                allMenuItems = await res.json();
+                if (allMenuItems.length === 0) { document.getElementById('menuSections').innerHTML = '<div class="empty-message"><i class="fas fa-utensils" style="font-size:2.5rem;opacity:0.5;margin-bottom:0.8rem;display:block;"></i><p>Меню ще не заповнене. Зайдіть в <a href="/admin/login" style="color:#d4af37;">адмін-панель</a> та додайте страви.</p></div>'; return; }
+                initFilters(); renderMenu();
+            } catch(e) { document.getElementById('menuSections').innerHTML = '<p class="error">Помилка завантаження меню</p>'; }
+        }
+        function initFilters() {
+            const categories = ['all', ...new Set(allMenuItems.map(i => i.category))];
+            const container = document.getElementById('filtersContainer');
+            container.innerHTML = categories.map(cat => { let icon = cat === 'all' ? '<i class="fas fa-th-large"></i>' : '<i class="'+getCategoryIcon(cat)+'"></i>'; return '<button class="filter-btn '+(cat===activeCategory?'active':'')+'" data-category="'+cat+'">'+icon+' '+(cat==='all'?'Всі':cat)+'</button>'; }).join('');
+            document.querySelectorAll('.filter-btn').forEach(btn => { btn.addEventListener('click', () => { activeCategory = btn.dataset.category; document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderMenu(); }); });
+        }
+        function renderMenu() {
+            const container = document.getElementById('menuSections');
+            if (!allMenuItems.length) return;
+            let filtered = activeCategory === 'all' ? allMenuItems : allMenuItems.filter(i => i.category === activeCategory);
+            const grouped = {};
+            filtered.forEach(item => { if (!grouped[item.category]) grouped[item.category] = []; grouped[item.category].push(item); });
+            if (activeCategory === 'all') {
+                container.innerHTML = Object.entries(grouped).map(([cat, items]) => '<div class="menu-section"><div class="menu-section-title"><i class="'+getCategoryIcon(cat)+'"></i>'+escapeHtml(cat)+'</div><div class="menu-grid">'+items.map(item => '<div class="menu-card"><div class="menu-card-header"><span class="menu-card-name">'+escapeHtml(item.name)+'</span><span class="menu-card-price">'+escapeHtml(item.price)+'</span></div><div class="menu-card-desc">'+escapeHtml(item.description||'')+'</div></div>').join('')+'</div></div>').join('');
+            } else {
+                container.innerHTML = '<div class="menu-section"><div class="menu-section-title"><i class="'+getCategoryIcon(activeCategory)+'"></i>'+escapeHtml(activeCategory)+'</div><div class="menu-grid">'+filtered.map(item => '<div class="menu-card"><div class="menu-card-header"><span class="menu-card-name">'+escapeHtml(item.name)+'</span><span class="menu-card-price">'+escapeHtml(item.price)+'</span></div><div class="menu-card-desc">'+escapeHtml(item.description||'')+'</div></div>').join('')+'</div></div>';
+            }
+        }
+        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':m==='>'?'&gt;':m); }
+        loadMenuData();
+    `
+}) %>
