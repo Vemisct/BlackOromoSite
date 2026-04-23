@@ -12,7 +12,6 @@
     "passport-google-oauth20": "^2.0.0",
     "cookie-parser": "^1.4.6",
     "socket.io": "^4.6.1",
-    "mysql2": "^3.6.5",
-    "ejs": "^3.1.9"
+    "pg": "^8.11.3"
   }
 }
