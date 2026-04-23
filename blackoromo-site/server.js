@@ -23,23 +23,35 @@ app.use(express.static('public'));
 let pool;
 async function createPool() {
     try {
-        let caCert = null;
-        try {
-            caCert = fs.readFileSync('/etc/secrets/ca.pem', 'utf8');
-            console.log('✅ Сертифікат SSL завантажено');
-        } catch (err) {
-            console.warn('⚠️ Файл /etc/secrets/ca.pem не знайдено, SSL вимкнено');
+        // Якщо є DATABASE_URL – використовуємо його
+        if (process.env.DB_URL) {
+            pool = mysql.createPool({
+                uri: process.env.DB_URL,
+                waitForConnections: true,
+                connectionLimit: 10
+            });
+            console.log('✅ Підключення через DATABASE_URL');
+        } else {
+            // fallback на окремі змінні (для локального тесту без DATABASE_URL)
+            let caCert = null;
+            try {
+                caCert = fs.readFileSync('/etc/secrets/ca.pem', 'utf8');
+                console.log('✅ Сертифікат SSL завантажено');
+            } catch (err) {
+                console.warn('⚠️ Файл /etc/secrets/ca.pem не знайдено, SSL вимкнено');
+            }
+            pool = mysql.createPool({
+                host: process.env.DB_HOST,
+                port: parseInt(process.env.DB_PORT) || 3306,
+                user: process.env.DB_USER,
+                password: process.env.DB_PASSWORD,
+                database: process.env.DB_NAME,
+                ssl: caCert ? { ca: caCert, rejectUnauthorized: true } : false,
+                waitForConnections: true,
+                connectionLimit: 10
+            });
+            console.log('✅ Підключення через окремі змінні');
         }
-        pool = mysql.createPool({
-            host: process.env.DB_HOST,
-            port: parseInt(process.env.DB_PORT) || 3306,
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME,
-            ssl: caCert ? { ca: caCert, rejectUnauthorized: true } : false,
-            waitForConnections: true,
-            connectionLimit: 10
-        });
         const conn = await pool.getConnection();
         console.log('✅ Підключено до MySQL (Aiven)');
         conn.release();
