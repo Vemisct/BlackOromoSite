@@ -175,6 +175,17 @@ async function initTables() {
             image_url TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )`);
+
+        await conn.query(`CREATE TABLE IF NOT EXISTS bookings (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            phone VARCHAR(50) NOT NULL,
+            date DATE NOT NULL,
+            time TIME NOT NULL,
+            guests INT NOT NULL,
+            message TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )`);
         
         const [admins] = await conn.query(`SELECT id FROM admins WHERE username = 'admin'`);
         if (admins.length === 0) {
@@ -406,6 +417,31 @@ app.get('/admin', isAdmin, (req, res) => res.sendFile(path.join(__dirname, 'publ
 app.get('/api/user', (req, res) => {
     if (req.user) res.json(req.user);
     else res.status(401).json({ error: 'not logged in' });
+});
+
+app.get('/api/admin/bookings', isAdmin, async (req, res) => {
+    try { const [rows] = await pool.query(`SELECT * FROM bookings ORDER BY date DESC, time ASC`); res.json(rows); } catch(e) { res.status(500).json({ error: e.message }); }
+});
+app.delete('/api/admin/booking/:id', isAdmin, async (req, res) => {
+    try { await pool.query(`DELETE FROM bookings WHERE id = ?`, [req.params.id]); res.json({ success: true }); } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// ========== БРОНЮВАННЯ СТОЛИКІВ ==========
+app.post('/api/booking', async (req, res) => {
+    const { name, phone, date, time, guests, message } = req.body;
+    if (!name || !phone || !date || !time || !guests) {
+        return res.status(400).json({ error: 'Всі обов\'язкові поля мають бути заповнені' });
+    }
+    try {
+        await pool.query(
+            `INSERT INTO bookings (name, phone, date, time, guests, message) VALUES (?, ?, ?, ?, ?, ?)`,
+            [name, phone, date, time, guests, message || '']
+        );
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Помилка збереження бронювання' });
+    }
 });
 
 // ========== СТОРІНКИ ==========

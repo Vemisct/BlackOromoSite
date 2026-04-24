@@ -312,6 +312,7 @@
         <div class="nav-item" data-tab="chat"><i class="fas fa-comments"></i> <span>Чат з клієнтами</span></div>
         <div class="nav-item" data-tab="promotions"><i class="fas fa-tags"></i> <span>Акції</span></div>
         <div class="nav-item" data-tab="blog"><i class="fas fa-blog"></i> <span>Блог</span></div>
+        <div class="nav-item" data-tab="bookings"><i class="fas fa-calendar-check"></i> <span>Бронювання</span></div>
         <div class="nav-item logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span>Вийти</span></div>
     </div>
     <div class="main-content">
@@ -394,6 +395,19 @@
                 <button id="cancelPostBtn" style="background:#555;">Скасувати</button>
             </div>
         </div>
+        <!-- Бронювання -->
+        <div id="bookingsTab" class="tab-content hidden">
+            <div class="page-header"><h1><i class="fas fa-calendar-check"></i> Бронювання столиків</h1></div>
+            <div class="menu-toolbar">
+                <div class="search-box"><i class="fas fa-search"></i><input type="text" id="bookingsSearch" placeholder="Пошук по імені або телефону..."></div>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="menu-table">
+                    <thead><tr><th>Ім'я</th><th>Телефон</th><th>Дата</th><th>Час</th><th>Гостей</th><th>Повідомлення</th><th>Дії</th></tr></thead>
+                    <tbody id="bookingsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -425,6 +439,7 @@
         chat: document.getElementById('chatTab'),
         promotions: document.getElementById('promotionsTab'),
         blog: document.getElementById('blogTab')
+        bookings: document.getElementById('bookingsTab')
     };
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
@@ -809,6 +824,51 @@
         } catch(e) { showNotification('❌ Помилка мережі', true); }
     };
     document.getElementById('cancelPostBtn').onclick = () => document.getElementById('postForm').style.display = 'none';
+
+    // ---------- Бронювання ----------
+    async function loadBookings() {
+        try {
+            const res = await fetch('/api/admin/bookings');
+            const bookings = await res.json();
+            const tbody = document.getElementById('bookingsTableBody');
+            tbody.innerHTML = '';
+            bookings.forEach(b => {
+                const row = tbody.insertRow();
+                row.insertCell(0).innerText = b.name;
+                row.insertCell(1).innerText = b.phone;
+                row.insertCell(2).innerText = b.date;
+                row.insertCell(3).innerText = b.time;
+                row.insertCell(4).innerText = b.guests;
+                row.insertCell(5).innerText = b.message?.substring(0, 50) || '';
+                const actions = row.insertCell(6);
+                const delBtn = document.createElement('button');
+                delBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                delBtn.className = 'delete-btn';
+                delBtn.onclick = () => deleteBooking(b.id);
+                actions.appendChild(delBtn);
+            });
+        } catch(e) { showNotification('Помилка завантаження бронювань', true); }
+    }
+    async function deleteBooking(id) {
+        if (!confirm('Видалити бронювання?')) return;
+        try {
+            const res = await fetch(`/api/admin/booking/${id}`, { method: 'DELETE' });
+            if (res.ok) { loadBookings(); showNotification('✅ Бронювання видалено'); }
+            else showNotification('❌ Помилка видалення', true);
+        } catch(e) { showNotification('❌ Помилка мережі', true); }
+    }
+    // Додати в обробник вкладок (tabs.forEach):
+    if (tabName === 'bookings') loadBookings();
+
+    document.getElementById('bookingsSearch')?.addEventListener('keyup', () => {
+        const term = document.getElementById('bookingsSearch').value.toLowerCase();
+        const rows = document.querySelectorAll('#bookingsTableBody tr');
+        rows.forEach(row => {
+            const name = row.cells[0]?.innerText.toLowerCase() || '';
+            const phone = row.cells[1]?.innerText.toLowerCase() || '';
+            row.style.display = (name.includes(term) || phone.includes(term)) ? '' : 'none';
+        });
+    });
 </script>
 </body>
 </html>

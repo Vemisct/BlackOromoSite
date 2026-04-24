@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/style.css">
     <style>
-        /* Додаткові стилі тільки для сторінки меню */
         .menu-hero {
             background: linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(0,0,0,0) 100%);
             border-radius: 0 0 60px 60px;
@@ -16,147 +15,59 @@
             margin-bottom: 30px;
             text-align: center;
         }
-        .menu-hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 3rem;
-            margin-bottom: 16px;
-        }
-        .menu-hero p {
-            font-size: 1.1rem;
-            opacity: 0.8;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        .menu-stats {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin: 20px 0 30px;
-            flex-wrap: wrap;
-        }
-        .menu-stat {
-            background: rgba(20,18,16,0.6);
-            border-radius: 60px;
-            padding: 8px 24px;
-            font-size: 0.9rem;
-        }
-        .menu-stat i {
-            color: var(--gold);
-            margin-right: 8px;
-        }
-        .filter-btn {
-            transition: all 0.2s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .filter-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.4s, height 0.4s;
-        }
-        .filter-btn:hover::before {
-            width: 100%;
-            height: 100%;
-        }
+        .menu-hero h1 { font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 16px; }
+        .menu-hero p { font-size: 1.1rem; opacity: 0.8; max-width: 600px; margin: 0 auto; }
+        .menu-stats { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin: 20px 0 30px; }
+        .menu-stat { background: rgba(20,18,16,0.6); border-radius: 60px; padding: 8px 24px; font-size: 0.9rem; }
+        .menu-stat i { color: var(--gold); margin-right: 8px; }
+        .menu-filters { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 20px 0 30px; }
+        .filter-btn { background: rgba(20,18,16,0.7); border: 1px solid rgba(212,175,55,0.3); padding: 8px 20px; border-radius: 60px; cursor: pointer; transition: 0.2s; color: #e8e0d5; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; }
+        .filter-btn.active, .filter-btn:hover { background: #d4af37; color: #0b0a09; border-color: #d4af37; }
+        .menu-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 28px; margin: 0 auto; }
         .menu-card {
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
+            flex: 0 0 300px;
+            max-width: 100%;
+            background: rgba(20,18,16,0.7);
+            backdrop-filter: blur(8px);
+            border-radius: 28px;
+            padding: 1.5rem;
+            border: 1px solid rgba(212,175,55,0.2);
+            transition: all 0.3s;
             display: flex;
             flex-direction: column;
-            height: 100%;
+            min-height: 240px;
         }
-        .menu-card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(212,175,55,0.1), transparent);
-            transition: left 0.5s;
-        }
-        .menu-card:hover::after {
-            left: 100%;
-        }
-        .menu-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 0.5rem;
-            flex-wrap: wrap;
-        }
-        .menu-card-name {
-            font-size: 1.2rem;
-            font-weight: 700;
-            letter-spacing: -0.3px;
-        }
-        .menu-card-price {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: var(--gold);
-        }
-        .menu-card-desc {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin: 0.5rem 0 1rem;
-            line-height: 1.4;
-            flex-grow: 1;
-        }
-        .order-btn-menu {
-            background: transparent;
-            border: 1px solid var(--gold);
-            color: var(--gold);
-            padding: 6px 16px;
-            border-radius: 40px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            width: 100%;
-            margin-top: 8px;
-        }
-        .order-btn-menu:hover {
-            background: var(--gold);
-            color: #0b0a09;
-            transform: translateY(-2px);
-        }
-        .spinner {
-            display: flex;
-            justify-content: center;
+        .menu-card:hover { transform: translateY(-5px); border-color: #d4af37; }
+        .menu-card-header { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 0.5rem; }
+        .menu-card-name { font-size: 1.2rem; font-weight: 700; }
+        .menu-card-price { font-size: 1.2rem; font-weight: 800; color: var(--gold); }
+        .menu-card-desc { font-size: 0.85rem; color: var(--text-muted); margin: 0.5rem 0 1rem; line-height: 1.4; flex-grow: 1; }
+        .order-btn-menu { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 6px 16px; border-radius: 40px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; width: 100%; margin-top: 8px; }
+        .order-btn-menu:hover { background: var(--gold); color: #0b0a09; transform: translateY(-2px); }
+        .menu-section { margin-bottom: 2.5rem; }
+        .menu-section-title {
+            font-size: 1.8rem;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 1.2rem;
+            display: inline-flex;
             align-items: center;
-            padding: 60px 0;
+            gap: 12px;
+            position: relative;
         }
-        .spinner i {
-            font-size: 3rem;
-            color: var(--gold);
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .error-message {
-            text-align: center;
-            padding: 60px 20px;
-            background: rgba(230,161,119,0.1);
-            border-radius: 48px;
-            color: #e6a177;
-        }
+        .menu-section-title:after { content: ''; position: absolute; bottom: -8px; left: 0; width: 60px; height: 3px; background: var(--gold); border-radius: 3px; }
         @media (max-width: 768px) {
             .menu-hero h1 { font-size: 2rem; }
-            .menu-stats { gap: 15px; }
             .menu-stat { padding: 4px 16px; font-size: 0.8rem; }
-            .menu-card-name { font-size: 1rem; }
-            .menu-card-price { font-size: 1rem; }
+            .menu-card { flex: 0 0 100%; max-width: 350px; }
+            .menu-card-name, .menu-card-price { font-size: 1rem; }
+            .menu-section-title { font-size: 1.4rem; }
         }
+        @media (max-width: 480px) { .filter-btn { padding: 6px 12px; font-size: 0.75rem; } }
+        .empty-message { text-align: center; padding: 2rem; background: rgba(20,18,16,0.5); border-radius: 40px; }
+        .spinner { display: flex; justify-content: center; padding: 60px; }
+        .spinner i { font-size: 3rem; color: var(--gold); animation: spin 1s linear infinite; }
+        .error-message { text-align: center; padding: 60px 20px; background: rgba(230,161,119,0.1); border-radius: 48px; color: #e6a177; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -181,18 +92,13 @@
 
 <main>
     <div class="container">
-        <!-- Hero секція меню -->
         <div class="menu-hero fade-in">
             <h1>Наше меню</h1>
             <p>Справжні смаки, приготовані з любов'ю та турботою про кожного гостя</p>
             <div class="menu-stats" id="menuStats"></div>
         </div>
-
-        <!-- Фільтри -->
         <div class="menu-filters" id="filtersContainer"></div>
-
-        <!-- Контейнер для карток меню -->
-        <div id="menuSections" class="menu-sections-wrapper"></div>
+        <div id="menuSections"></div>
     </div>
 </main>
 
@@ -209,10 +115,10 @@
                 <a href="/promotions">Акції</a> &nbsp;|&nbsp;
                 <a href="/blog">Блог</a>
             </div>
-            <div><a href="/admin/login" style="color:#d4af37; font-size:0.8rem;">Вхід для адміна</a></div>
+            <div><a href="/admin/login" style="color:#d4af37;">Вхід для адміна</a></div>
         </div>
         <div style="text-align: center; margin-top: 24px; font-size: 0.75rem; opacity: 0.6;">
-            Version: <span id="siteVersion">BOS-1.7.24-R</span>
+            Version: <span id="siteVersion">BOS-1.7.35-BS</span>
         </div>
         <p style="margin-top: 28px;">© 2026 Black Oromo Coffee. Ваша кава з любов'ю.</p>
     </div>
@@ -225,7 +131,6 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="/chat-sidebar.js"></script>
 <script>
-    // Кнопка "Вгору"
     const scrollBtn = document.getElementById('scrollToTopBtn');
     window.addEventListener('scroll', () => {
         if (window.scrollY > 300) scrollBtn.classList.add('visible');
@@ -237,18 +142,11 @@
     let activeCategory = 'all';
 
     const categoryIcons = {
-        'Кава': 'fas fa-mug-hot',
-        'Кава та напої': 'fas fa-mug-hot',
-        'Лимонади та коктейлі': 'fas fa-cocktail',
-        'Коктейлі': 'fas fa-cocktail',
-        'Мілкшейки, Бабл, Десерти': 'fas fa-ice-cream',
-        'Десерти': 'fas fa-cake-candles',
-        'Фастфуд': 'fas fa-hamburger',
-        'Перекуси': 'fas fa-hamburger',
-        'Закуски': 'fas fa-bowl-food',
-        'Вода': 'fas fa-bottle-water',
-        'Напої': 'fas fa-wine-bottle',
-        'Снеки': 'fas fa-cookie-bite',
+        'Кава': 'fas fa-mug-hot', 'Кава та напої': 'fas fa-mug-hot',
+        'Лимонади та коктейлі': 'fas fa-cocktail', 'Коктейлі': 'fas fa-cocktail',
+        'Мілкшейки, Бабл, Десерти': 'fas fa-ice-cream', 'Десерти': 'fas fa-cake-candles',
+        'Фастфуд': 'fas fa-hamburger', 'Перекуси': 'fas fa-hamburger', 'Закуски': 'fas fa-bowl-food',
+        'Вода': 'fas fa-bottle-water', 'Напої': 'fas fa-wine-bottle', 'Снеки': 'fas fa-cookie-bite',
         'Морозиво': 'fas fa-ice-cream'
     };
     
@@ -260,7 +158,7 @@
         if (lower.includes('десерт') || lower.includes('тістечк')) return 'fas fa-cake-candles';
         if (lower.includes('бургер') || lower.includes('фаст') || lower.includes('снек')) return 'fas fa-hamburger';
         if (lower.includes('морозиво')) return 'fas fa-ice-cream';
-        if (lower.includes('вода') || lower.includes('бутильован') || lower.includes('банка')) return 'fas fa-bottle-water';
+        if (lower.includes('вода') || lower.includes('бутильован')) return 'fas fa-bottle-water';
         return 'fas fa-utensils';
     }
 
@@ -271,27 +169,19 @@
             const res = await fetch('/api/menu');
             allMenuItems = await res.json();
             if (allMenuItems.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-message">
-                        <i class="fas fa-utensils" style="font-size: 2.5rem; opacity: 0.5; margin-bottom: 0.8rem; display: block;"></i>
-                        <p>Меню ще не заповнене. Зайдіть в <a href="/admin/login" style="color:#d4af37;">адмін-панель</a> та додайте страви.</p>
-                    </div>
-                `;
+                container.innerHTML = '<div class="empty-message">Меню порожнє. Додайте страви в адмін-панелі.</div>';
+                document.getElementById('menuStats').innerHTML = '';
                 return;
             }
-            // Відображення статистики (кількість страв)
-            const statsDiv = document.getElementById('menuStats');
-            const totalItems = allMenuItems.length;
-            const categoriesCount = new Set(allMenuItems.map(i => i.category)).size;
-            statsDiv.innerHTML = `
-                <div class="menu-stat"><i class="fas fa-utensils"></i> ${totalItems} страв</div>
-                <div class="menu-stat"><i class="fas fa-tags"></i> ${categoriesCount} категорій</div>
+            document.getElementById('menuStats').innerHTML = `
+                <div class="menu-stat"><i class="fas fa-utensils"></i> ${allMenuItems.length} страв</div>
+                <div class="menu-stat"><i class="fas fa-tags"></i> ${new Set(allMenuItems.map(i => i.category)).size} категорій</div>
             `;
             initFilters();
             renderMenu();
         } catch(e) {
             console.error(e);
-            container.innerHTML = '<div class="error-message"><i class="fas fa-exclamation-triangle"></i> Помилка завантаження меню. Спробуйте пізніше.</div>';
+            container.innerHTML = '<div class="error-message">Помилка завантаження меню. Спробуйте пізніше.</div>';
         }
     }
 
@@ -301,20 +191,14 @@
         container.innerHTML = categories.map(cat => {
             let icon = cat === 'all' ? '<i class="fas fa-th-large"></i>' : `<i class="${getCategoryIcon(cat)}"></i>`;
             let label = cat === 'all' ? 'Всі страви' : cat;
-            return `
-                <button class="filter-btn ${cat === activeCategory ? 'active' : ''}" data-category="${cat}">
-                    ${icon} ${label}
-                </button>
-            `;
+            return `<button class="filter-btn ${cat === activeCategory ? 'active' : ''}" data-category="${cat}">${icon} ${label}</button>`;
         }).join('');
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                activeCategory = btn.dataset.category;
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                renderMenu();
-            });
-        });
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.addEventListener('click', () => {
+            activeCategory = btn.dataset.category;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderMenu();
+        }));
     }
 
     function renderMenu() {
@@ -322,18 +206,12 @@
         if (!allMenuItems.length) return;
         let filtered = activeCategory === 'all' ? allMenuItems : allMenuItems.filter(i => i.category === activeCategory);
         const grouped = {};
-        filtered.forEach(item => {
-            if (!grouped[item.category]) grouped[item.category] = [];
-            grouped[item.category].push(item);
-        });
+        filtered.forEach(item => { if (!grouped[item.category]) grouped[item.category] = []; grouped[item.category].push(item); });
         
         if (activeCategory === 'all') {
             container.innerHTML = Object.entries(grouped).map(([cat, items]) => `
                 <div class="menu-section scroll-animate">
-                    <div class="menu-section-title">
-                        <i class="${getCategoryIcon(cat)}"></i>
-                        ${escapeHtml(cat)}
-                    </div>
+                    <div class="menu-section-title"><i class="${getCategoryIcon(cat)}"></i> ${escapeHtml(cat)}</div>
                     <div class="menu-grid">
                         ${items.map(item => `
                             <div class="menu-card">
@@ -351,10 +229,7 @@
         } else {
             container.innerHTML = `
                 <div class="menu-section scroll-animate">
-                    <div class="menu-section-title">
-                        <i class="${getCategoryIcon(activeCategory)}"></i>
-                        ${escapeHtml(activeCategory)}
-                    </div>
+                    <div class="menu-section-title"><i class="${getCategoryIcon(activeCategory)}"></i> ${escapeHtml(activeCategory)}</div>
                     <div class="menu-grid">
                         ${filtered.map(item => `
                             <div class="menu-card">
@@ -370,30 +245,12 @@
                 </div>
             `;
         }
-        
-        // Додаємо обробники для кнопок "Замовити"
-        document.querySelectorAll('.order-btn-menu').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const itemName = btn.getAttribute('data-item');
-                alert(`Функція замовлення для "${itemName}" незабаром з'явиться!`);
-            });
-        });
-        
-        // Повторно застосовуємо анімацію для нових елементів
-        const animatedElements = document.querySelectorAll('.scroll-animate');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('visible');
-            });
-        }, { threshold: 0.1 });
-        animatedElements.forEach(el => observer.observe(el));
+        document.querySelectorAll('.order-btn-menu').forEach(btn => btn.addEventListener('click', () => alert(`Функція замовлення для "${btn.getAttribute('data-item')}" незабаром з'явиться!`)));
+        const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); }); }, { threshold: 0.1 });
+        document.querySelectorAll('.scroll-animate').forEach(el => observer.observe(el));
     }
 
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':m==='>'?'&gt;':m);
-    }
+    function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':m==='>'?'&gt;':m); }
 
     async function checkUser() {
         try {
